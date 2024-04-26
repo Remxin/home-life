@@ -2,13 +2,14 @@ import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 
 // components
-import { Form } from '../components/form/Form'
-import Input from "../components/form/Input"
-import Button from '../components/form/Button'
+import { Form } from '../../components/form/Form'
+import Input from "../../components/form/Input"
+import Button from '../../components/form/Button'
+import Link from '../../components/link/Link'
 
 //  constants 
-import appConstants from '../constants/appConstants'
-import colors from '../constants/colors'
+import appConstants from '../../constants/appConstants'
+import colors from '../../constants/colors'
 
 async function submit() {
 
@@ -18,10 +19,11 @@ const Login = () => {
     <Form values={["email", "password"]} submit={submit}>
         <View style={styles.container}>
           <Text style={styles.title}>{appConstants.name}</Text>
-          <Image source={require("../assets/images/piggy.png")} style={styles.image}/>
+          <Image source={require("../../assets/images/piggy.png")} style={styles.image}/>
           <Input name="email" placeholder='Enter email' inputStyle={styles.input} containerStyle={styles.inputContainer}/>
           <Input name="password" placeholder='Enter password' secure={true} inputStyle={styles.input} containerStyle={styles.inputContainer} secureIconButtonStyle={styles.secureIconButton} secureIconStyle={styles.secureIcon}/>
           <Button text="Login" buttonStyle={styles.button}/>
+          <Link text="I don't have an account" destination='register'/>
         </View>
       </Form>
   )
