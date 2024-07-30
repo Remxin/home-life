@@ -11,7 +11,7 @@ option go_package = "github.com/Remxin/home-life/server/pb";
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     info: {
         title: "Home Life API";
-        version: "1.0";
+        version: "1.1";
         contact: {
             name: "Dawid";
             url: "github.com/Remxin/home-life/server";

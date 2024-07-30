@@ -1,1 +1,9 @@
+# .env files
+app.env
+
+# ____ CLIENT ___
 node_modules
+
+
+# ____ SERVER ____
+server/db/mock/*.go
