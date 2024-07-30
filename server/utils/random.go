@@ -11,10 +11,10 @@ func randomString(n int) string {
 	var sb strings.Builder
 	k := len(ALPHABET)
 
-	for n = 0; n < k; n++ {
+	for i := 0; i < n; i++ {
 		c := ALPHABET[rand.Intn(k)]
 		sb.WriteByte(c)
 	}
-	
+
 	return sb.String()
 }

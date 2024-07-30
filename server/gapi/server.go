@@ -6,19 +6,19 @@ import (
 	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/pb"
 	"github.com/Remxin/home-life/server/token"
-	"github.com/Remxin/home-life/server/util"
+	"github.com/Remxin/home-life/server/utils"
 
 	_ "github.com/lib/pq"
 )
 
 type Server struct {
 	pb.UnimplementedHomeLifeServer
-	config util.Config
+	config utils.Config
 	store db.Store
 	tokenMaker token.Maker
 }
 
-func NewServer (config util.Config, store db.Store) (*Server, error) {
+func NewServer (config utils.Config, store db.Store) (*Server, error) {
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %w", err)
@@ -29,7 +29,5 @@ func NewServer (config util.Config, store db.Store) (*Server, error) {
 		tokenMaker: tokenMaker,
 	}
 	
-
-
 	return server, nil
 }

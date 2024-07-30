@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Home Life API",
-    "version": "1.0",
+    "version": "1.1",
     "contact": {
       "name": "Dawid",
       "url": "github.com/Remxin/home-life/server",

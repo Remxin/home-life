@@ -12,6 +12,9 @@ migratedown:
 sqlc:
 	sqlc generate
 
+mock:
+	mockgen -destination db/mock/store.go github.com/Remxin/home-life/server/db/sqlc Store
+
 proto:
 	rm -f pb/*.go
 	rm -f doc/swagger/*.swagger.json
@@ -21,7 +24,15 @@ proto:
 	--openapiv2_out=doc/swagger --openapiv2_opt=allow_merge=true,merge_file_name=home-life \
 	proto/*.proto
 	statik -src=./doc/swagger -dest=./doc
+
+db_docs:
+	dbdocs build doc/db.dbml
+
+db_schema:
+	dbml2sql --postgres -o doc/schema.sql doc/db.dbml
 	
+server:
+	go run main.go
 
 
-.PHONY: createdb, migrateup, migratedown, sqlc, proto
+.PHONY: createdb migrateup migratedown sqlc mock proto db_docs db_schema server
