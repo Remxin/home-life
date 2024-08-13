@@ -15,10 +15,12 @@ type Querier interface {
 	CreatePermissions(ctx context.Context, arg CreatePermissionsParams) (Permission, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
+	CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmail, error)
 	GetMembers(ctx context.Context, familyID uuid.NullUUID) ([]GetMembersRow, error)
 	GetPermissions(ctx context.Context, id uuid.UUID) (Permission, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	GetUser(ctx context.Context, id uuid.UUID) (User, error)
+	UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailParams) (VerifyEmail, error)
 }
 
 var _ Querier = (*Queries)(nil)

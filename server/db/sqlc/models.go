@@ -56,9 +56,9 @@ type Task struct {
 
 type User struct {
 	ID                uuid.UUID     `json:"id"`
-	Name              string        `json:"name"`
+	FullName          string        `json:"full_name"`
 	Email             string        `json:"email"`
-	Password          string        `json:"password"`
+	HashedPassword    string        `json:"hashed_password"`
 	IsVerified        bool          `json:"is_verified"`
 	Family            uuid.NullUUID `json:"family"`
 	PasswordChangedAt time.Time     `json:"password_changed_at"`
