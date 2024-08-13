@@ -54,6 +54,44 @@
           "HomeLife"
         ]
       }
+    },
+    "/v1/verify_user": {
+      "get": {
+        "summary": "Verify user email",
+        "description": "Use this API to verify created user email",
+        "operationId": "HomeLife_VerifyUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbVerifyUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "emailId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "secretCode",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
     }
   },
   "definitions": {
@@ -91,9 +129,6 @@
         "name": {
           "type": "string"
         },
-        "fullName": {
-          "type": "string"
-        },
         "email": {
           "type": "string"
         },
@@ -104,6 +139,14 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbVerifyUserResponse": {
+      "type": "object",
+      "properties": {
+        "isVerified": {
+          "type": "boolean"
         }
       }
     },

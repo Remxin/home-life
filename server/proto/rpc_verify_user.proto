@@ -1,0 +1,13 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message VerifyUserRequest {
+    string email_id = 1;
+    string secret_code = 2;
+}
+
+message VerifyUserResponse {
+    bool is_verified = 1;
+}
