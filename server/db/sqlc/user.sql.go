@@ -13,14 +13,16 @@ import (
 
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
-    name,
+    id,
+    full_name,
     email,
-    password
+    hashed_password
 ) VALUES (
+    gen_random_uuid(),
     $1,
     $2,
     $3
-) RETURNING id, name, email, password, is_verified, family, password_changed_at, created_at
+) RETURNING id, full_name, email, hashed_password, is_verified, family, password_changed_at, created_at
 `
 
 type CreateUserParams struct {
@@ -34,9 +36,9 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.Name,
+		&i.FullName,
 		&i.Email,
-		&i.Password,
+		&i.HashedPassword,
 		&i.IsVerified,
 		&i.Family,
 		&i.PasswordChangedAt,
@@ -46,7 +48,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUser = `-- name: GetUser :one
-SELECT id, name, email, password, is_verified, family, password_changed_at, created_at FROM "users"
+SELECT id, full_name, email, hashed_password, is_verified, family, password_changed_at, created_at FROM "users"
 WHERE id = $1 LIMIT 1
 `
 
@@ -55,9 +57,9 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 	var i User
 	err := row.Scan(
 		&i.ID,
-		&i.Name,
+		&i.FullName,
 		&i.Email,
-		&i.Password,
+		&i.HashedPassword,
 		&i.IsVerified,
 		&i.Family,
 		&i.PasswordChangedAt,

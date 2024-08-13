@@ -1,8 +1,8 @@
 CREATE TABLE "users" (
   "id" uuid PRIMARY KEY,
-  "name" varchar NOT NULL,
+  "full_name" varchar NOT NULL,
   "email" varchar UNIQUE NOT NULL,
-  "password" varchar NOT NULL,
+  "hashed_password" varchar NOT NULL,
   "is_verified" boolean NOT NULL DEFAULT false,
   "family" uuid DEFAULT null,
   "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',

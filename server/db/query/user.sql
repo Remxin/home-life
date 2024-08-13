@@ -1,9 +1,11 @@
 -- name: CreateUser :one
 INSERT INTO users (
-    name,
+    id,
+    full_name,
     email,
-    password
+    hashed_password
 ) VALUES (
+    gen_random_uuid(),
     @name,
     @email,
     @password

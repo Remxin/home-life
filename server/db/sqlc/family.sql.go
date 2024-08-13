@@ -14,9 +14,11 @@ import (
 
 const createFamily = `-- name: CreateFamily :one
 INSERT INTO "families" (
+    id,
     name,
     owner
 ) VALUES (
+    gen_random_uuid(),
     $1,
     $2
 ) RETURNING id, name, owner
@@ -35,13 +37,13 @@ func (q *Queries) CreateFamily(ctx context.Context, arg CreateFamilyParams) (Fam
 }
 
 const getMembers = `-- name: GetMembers :many
-SELECT id, name, email, is_verified, created_at FROM "users"
+SELECT id, full_name, email, is_verified, created_at FROM "users"
 WHERE family = $1
 `
 
 type GetMembersRow struct {
 	ID         uuid.UUID `json:"id"`
-	Name       string    `json:"name"`
+	FullName   string    `json:"full_name"`
 	Email      string    `json:"email"`
 	IsVerified bool      `json:"is_verified"`
 	CreatedAt  time.Time `json:"created_at"`
@@ -58,7 +60,7 @@ func (q *Queries) GetMembers(ctx context.Context, familyID uuid.NullUUID) ([]Get
 		var i GetMembersRow
 		if err := rows.Scan(
 			&i.ID,
-			&i.Name,
+			&i.FullName,
 			&i.Email,
 			&i.IsVerified,
 			&i.CreatedAt,

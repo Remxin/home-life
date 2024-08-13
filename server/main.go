@@ -11,12 +11,15 @@ import (
 	db "github.com/Remxin/home-life/server/db/sqlc"
 	_ "github.com/Remxin/home-life/server/doc/statik"
 	gapi "github.com/Remxin/home-life/server/gapi"
+	"github.com/Remxin/home-life/server/mail"
 	pb "github.com/Remxin/home-life/server/pb"
 	"github.com/Remxin/home-life/server/utils"
+	"github.com/Remxin/home-life/server/worker"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/hibiken/asynq"
 	_ "github.com/mattes/migrate/source/file"
 	"github.com/rakyll/statik/fs"
 	"github.com/rs/zerolog"
@@ -29,7 +32,8 @@ import (
 func main() {
 	config, err := utils.LoadConfig(".")
 	if err != nil {
-		log.Fatal().Msg("cannot load config: ")
+		fmt.Println("%w", err)
+		log.Fatal().Msg("cannot load config")
 	}
 
 	if config.Environment == "development" {
@@ -40,15 +44,20 @@ func main() {
 	if err != nil {
 		log.Fatal().Msg("cannot connect to database")
 	}
+	redisOpt := asynq.RedisClientOpt{
+		Addr: config.RedisURL,
+	}
+	taskDistributor := worker.NewRedisTaskDistributor(redisOpt)
 
 	runDBMigration(config.MigrationURL, config.DBSource)
 	store := db.NewStore(conn)
-	go runGatewayServer(config, store)
-	runGrcpServer(config, store)
+	go runTaskProcessor(config, redisOpt, store)
+	go runGatewayServer(config, store, taskDistributor)
+	runGrcpServer(config, store, taskDistributor)
 }
 
-func runGrcpServer(config utils.Config, store db.Store) {
-	server, err := gapi.NewServer(config, store) 
+func runGrcpServer(config utils.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+	server, err := gapi.NewServer(config, store, taskDistributor) 
 	if err != nil {
 		log.Fatal().Msg("cannot create server")
 	}
@@ -70,8 +79,8 @@ func runGrcpServer(config utils.Config, store db.Store) {
 	}
 }
 
-func runGatewayServer(config utils.Config, store db.Store) {
-	server, err := gapi.NewServer(config, store) 
+func runGatewayServer(config utils.Config, store db.Store, taskDistributor worker.TaskDistributor) {
+	server, err := gapi.NewServer(config, store, taskDistributor) 
 	if err != nil {
 		log.Fatal().Msg("cannot create server")
 	}
@@ -129,4 +138,15 @@ func runDBMigration(migrationURL string, dbSource string) {
 		log.Fatal().Msg("failed to run migrate up:")
 	}
 	log.Info().Msg("db migrated successfully")
+}
+
+func runTaskProcessor(config utils.Config, redisOpt asynq.RedisClientOpt, store db.Store) {
+	mailer := mail.NewEmailSender(config.EmailSenderName, config.EmailSenderAddress, config.EmailSenderPassword)
+	taskProcessor := worker.NewRedisTaskProcessor(redisOpt, store, mailer)
+	log.Info().Msg("start task processor")
+
+	err := taskProcessor.Start()
+	if err != nil {
+		log.Fatal().Err(err).Msg("cannot start task processor")
+	}	
 }
