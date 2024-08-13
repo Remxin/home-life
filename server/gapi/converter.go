@@ -10,10 +10,10 @@ import (
 
 func convertUser(user db.User) *pb.User {
 	return &pb.User{
-		Id: user.ID.String(),
-		Name: user.FullName,
-		Email: user.Email,
+		Id:                user.ID.String(),
+		Name:              user.FullName,
+		Email:             user.Email,
 		PasswordChangedAt: timestamppb.New(user.PasswordChangedAt),
-		CreatedAt: timestamppb.New(user.CreatedAt),
+		CreatedAt:         timestamppb.New(user.CreatedAt),
 	}
 }

@@ -45,3 +45,11 @@ func ValidateEmail(value string) error {
 
 	return nil
 }
+
+func ValidateSecretCode(value string) error {
+	return ValidateString(value, 32, 128)
+}
+
+func ValidateUUID(value string) error {
+	return ValidateString(value, 32, 128)
+}

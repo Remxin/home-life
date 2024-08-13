@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -54,6 +55,51 @@ WHERE id = $1 LIMIT 1
 
 func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUser, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.Email,
+		&i.HashedPassword,
+		&i.IsVerified,
+		&i.Family,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateUser = `-- name: UpdateUser :one
+UPDATE "users"
+SET
+    hashed_password = COALESCE($1, hashed_password),
+    password_changed_at = COALESCE($2, password_changed_at),
+    full_name = COALESCE($3, full_name),
+    email = COALESCE($4, email),
+    is_verified = COALESCE($5, is_verified)
+WHERE
+    id = $6
+RETURNING id, full_name, email, hashed_password, is_verified, family, password_changed_at, created_at
+`
+
+type UpdateUserParams struct {
+	HashedPassword    sql.NullString `json:"hashed_password"`
+	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
+	FullName          sql.NullString `json:"full_name"`
+	Email             sql.NullString `json:"email"`
+	IsVerified        sql.NullBool   `json:"is_verified"`
+	ID                uuid.UUID      `json:"id"`
+}
+
+func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, updateUser,
+		arg.HashedPassword,
+		arg.PasswordChangedAt,
+		arg.FullName,
+		arg.Email,
+		arg.IsVerified,
+		arg.ID,
+	)
 	var i User
 	err := row.Scan(
 		&i.ID,
