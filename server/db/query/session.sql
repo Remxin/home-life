@@ -7,7 +7,7 @@ INSERT INTO "sessions" (
     client_ip,
     expires_at
 ) VALUES (
-    gen_random_uuid(),
+    @id,
     @user_id,
     @refresh_token,
     @user_agent,

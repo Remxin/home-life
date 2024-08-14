@@ -49,7 +49,7 @@ func (processor *RedisTaskProcessor) ProcessTaskVerifyEmail(ctx context.Context,
 		return fmt.Errorf("failed to unmarshal payload: %w", asynq.SkipRetry)
 	}
 
-	user, err := processor.store.GetUser(ctx, payload.ID)
+	user, err := processor.store.GetUserById(ctx, payload.ID)
 	if err != nil {
 		return fmt.Errorf("failed to get user: %w", err)
 	}
