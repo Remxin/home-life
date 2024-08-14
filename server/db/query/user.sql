@@ -11,9 +11,13 @@ INSERT INTO users (
     @password
 ) RETURNING *;
 
--- name: GetUser :one
+-- name: GetUserById :one
 SELECT * FROM "users"
 WHERE id = @id LIMIT 1;
+
+-- name: GetUserByEmail :one
+SELECT * FROM "users"
+WHERE email = @email LIMIT 1;
 
 -- name: UpdateUser :one
 UPDATE "users"

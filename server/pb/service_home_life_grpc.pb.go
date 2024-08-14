@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion8
 const (
 	HomeLife_CreateUser_FullMethodName = "/pb.HomeLife/CreateUser"
 	HomeLife_VerifyUser_FullMethodName = "/pb.HomeLife/VerifyUser"
+	HomeLife_LoginUser_FullMethodName  = "/pb.HomeLife/LoginUser"
 )
 
 // HomeLifeClient is the client API for HomeLife service.
@@ -29,6 +30,7 @@ const (
 type HomeLifeClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	VerifyUser(ctx context.Context, in *VerifyUserRequest, opts ...grpc.CallOption) (*VerifyUserResponse, error)
+	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
 }
 
 type homeLifeClient struct {
@@ -59,12 +61,23 @@ func (c *homeLifeClient) VerifyUser(ctx context.Context, in *VerifyUserRequest, 
 	return out, nil
 }
 
+func (c *homeLifeClient) LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(LoginUserResponse)
+	err := c.cc.Invoke(ctx, HomeLife_LoginUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HomeLifeServer is the server API for HomeLife service.
 // All implementations must embed UnimplementedHomeLifeServer
 // for forward compatibility
 type HomeLifeServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	VerifyUser(context.Context, *VerifyUserRequest) (*VerifyUserResponse, error)
+	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
 	mustEmbedUnimplementedHomeLifeServer()
 }
 
@@ -77,6 +90,9 @@ func (UnimplementedHomeLifeServer) CreateUser(context.Context, *CreateUserReques
 }
 func (UnimplementedHomeLifeServer) VerifyUser(context.Context, *VerifyUserRequest) (*VerifyUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifyUser not implemented")
+}
+func (UnimplementedHomeLifeServer) LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginUser not implemented")
 }
 func (UnimplementedHomeLifeServer) mustEmbedUnimplementedHomeLifeServer() {}
 
@@ -127,6 +143,24 @@ func _HomeLife_VerifyUser_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HomeLife_LoginUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).LoginUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_LoginUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).LoginUser(ctx, req.(*LoginUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HomeLife_ServiceDesc is the grpc.ServiceDesc for HomeLife service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -141,6 +175,10 @@ var HomeLife_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "VerifyUser",
 			Handler:    _HomeLife_VerifyUser_Handler,
+		},
+		{
+			MethodName: "LoginUser",
+			Handler:    _HomeLife_LoginUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

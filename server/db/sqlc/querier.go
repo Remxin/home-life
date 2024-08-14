@@ -19,7 +19,8 @@ type Querier interface {
 	GetMembers(ctx context.Context, familyID uuid.NullUUID) ([]GetMembersRow, error)
 	GetPermissions(ctx context.Context, id uuid.UUID) (Permission, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
-	GetUser(ctx context.Context, id uuid.UUID) (User, error)
+	GetUserByEmail(ctx context.Context, email string) (User, error)
+	GetUserById(ctx context.Context, id uuid.UUID) (User, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 	UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailParams) (VerifyEmail, error)
 }
