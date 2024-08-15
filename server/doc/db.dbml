@@ -1,10 +1,10 @@
 Table users as U {
   id uuid [pk]
-  name varchar [not null]
+  full_name varchar [not null]
   email varchar [not null, unique]
-  password varchar [not null]
+  hashed_password varchar [not null]
   is_verified boolean [not null, default: false]
-  family uuid [ref: > F.id, default: null]
+  family_id uuid [ref: > F.id, default: null]
   password_changed_at timestamptz [not null, default: '0001-01-01 00:00:00Z']
   created_at timestamptz [not null, default: `now()`]
 }
@@ -12,21 +12,23 @@ Table users as U {
 Table families as F {
   id uuid [pk]
   name varchar [not null]
-  owner uuid [ref: > U.id, not null]
+  owner_id uuid [ref: > U.id, not null, unique]
+  created_at timestamptz [not null, default: `now()`]
 }
 
 Table permissions as P {
   id uuid [pk, ref: > U.id]
   can_read boolean [not null, default: true]
-  can_edit boolean [not null, default: false]
-  can_create boolean [not null, default: true]
+  can_edit boolean [not null, default: true]
+  can_create boolean [not null, default: false]
+  can_modify boolean [not null, default: false]
 }
 
 Table tasks as T {
   id uuid [pk]
   name varchar [not null]
   description varchar [not null, default: ""]
-  family uuid [ref: > F.id, not null]
+  family_id uuid [ref: > F.id, not null]
   created_by uuid [ref: > U.id, not null]
   assigned_to uuid [ref: > U.id, default: null]
   date timestamptz [not null]

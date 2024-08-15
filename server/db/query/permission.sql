@@ -3,12 +3,14 @@ INSERT INTO "permissions" (
     id,
     can_read,
     can_edit,
-    can_create
+    can_create,
+    can_modify
 ) VALUES (
     @id,
     @can_read,
     @can_edit,
-    @can_create
+    @can_create,
+    @can_modify
 ) RETURNING *;
 
 -- name: GetPermissions :one

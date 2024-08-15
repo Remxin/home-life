@@ -31,5 +31,13 @@ WHERE
     id = sqlc.arg(id)
 RETURNING *;
 
+-- name: AddUserToFamily :one
+UPDATE "users"
+SET
+    family_id = @family_id
+WHERE
+    id = @id
+RETURNING *;
+
 
 

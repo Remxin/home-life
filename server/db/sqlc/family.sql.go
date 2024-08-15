@@ -16,29 +16,34 @@ const createFamily = `-- name: CreateFamily :one
 INSERT INTO "families" (
     id,
     name,
-    owner
+    owner_id
 ) VALUES (
     gen_random_uuid(),
     $1,
     $2
-) RETURNING id, name, owner
+) RETURNING id, name, owner_id, created_at
 `
 
 type CreateFamilyParams struct {
-	Name  string    `json:"name"`
-	Owner uuid.UUID `json:"owner"`
+	Name    string    `json:"name"`
+	OwnerID uuid.UUID `json:"owner_id"`
 }
 
 func (q *Queries) CreateFamily(ctx context.Context, arg CreateFamilyParams) (Family, error) {
-	row := q.db.QueryRowContext(ctx, createFamily, arg.Name, arg.Owner)
+	row := q.db.QueryRowContext(ctx, createFamily, arg.Name, arg.OwnerID)
 	var i Family
-	err := row.Scan(&i.ID, &i.Name, &i.Owner)
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.OwnerID,
+		&i.CreatedAt,
+	)
 	return i, err
 }
 
 const getMembers = `-- name: GetMembers :many
 SELECT id, full_name, email, is_verified, created_at FROM "users"
-WHERE family = $1
+WHERE family_id = $1
 `
 
 type GetMembersRow struct {

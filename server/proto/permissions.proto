@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message Permissions {
+    string id = 1;
+    bool can_read = 2;
+    bool can_edit = 3;
+    bool can_create = 4;
+    bool can_modify = 5;
+}
