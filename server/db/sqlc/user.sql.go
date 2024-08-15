@@ -12,6 +12,36 @@ import (
 	"github.com/google/uuid"
 )
 
+const addUserToFamily = `-- name: AddUserToFamily :one
+UPDATE "users"
+SET
+    family_id = $1
+WHERE
+    id = $2
+RETURNING id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at
+`
+
+type AddUserToFamilyParams struct {
+	FamilyID uuid.NullUUID `json:"family_id"`
+	ID       uuid.UUID     `json:"id"`
+}
+
+func (q *Queries) AddUserToFamily(ctx context.Context, arg AddUserToFamilyParams) (User, error) {
+	row := q.db.QueryRowContext(ctx, addUserToFamily, arg.FamilyID, arg.ID)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.Email,
+		&i.HashedPassword,
+		&i.IsVerified,
+		&i.FamilyID,
+		&i.PasswordChangedAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
     id,
@@ -23,7 +53,7 @@ INSERT INTO users (
     $1,
     $2,
     $3
-) RETURNING id, full_name, email, hashed_password, is_verified, family, password_changed_at, created_at
+) RETURNING id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at
 `
 
 type CreateUserParams struct {
@@ -41,7 +71,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Email,
 		&i.HashedPassword,
 		&i.IsVerified,
-		&i.Family,
+		&i.FamilyID,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
@@ -49,7 +79,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, full_name, email, hashed_password, is_verified, family, password_changed_at, created_at FROM "users"
+SELECT id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at FROM "users"
 WHERE email = $1 LIMIT 1
 `
 
@@ -62,7 +92,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.Email,
 		&i.HashedPassword,
 		&i.IsVerified,
-		&i.Family,
+		&i.FamilyID,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
@@ -70,7 +100,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, full_name, email, hashed_password, is_verified, family, password_changed_at, created_at FROM "users"
+SELECT id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at FROM "users"
 WHERE id = $1 LIMIT 1
 `
 
@@ -83,7 +113,7 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Email,
 		&i.HashedPassword,
 		&i.IsVerified,
-		&i.Family,
+		&i.FamilyID,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
@@ -100,7 +130,7 @@ SET
     is_verified = COALESCE($5, is_verified)
 WHERE
     id = $6
-RETURNING id, full_name, email, hashed_password, is_verified, family, password_changed_at, created_at
+RETURNING id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at
 `
 
 type UpdateUserParams struct {
@@ -128,7 +158,7 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Email,
 		&i.HashedPassword,
 		&i.IsVerified,
-		&i.Family,
+		&i.FamilyID,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)

@@ -55,6 +55,74 @@
         ]
       }
     },
+    "/v1/family": {
+      "post": {
+        "summary": "Create family group",
+        "description": "Use this API to create a family group",
+        "operationId": "HomeLife_CreateFamily",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateFamilyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateFamilyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
+    "/v1/family/add_user": {
+      "post": {
+        "summary": "Add user to a family",
+        "description": "Use this API to add user to a family",
+        "operationId": "HomeLife_AddToFamily",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAddToFamilyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbAddToFamilyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
     "/v1/login_user": {
       "post": {
         "summary": "Login user",
@@ -129,6 +197,59 @@
     }
   },
   "definitions": {
+    "pbAddToFamilyRequest": {
+      "type": "object",
+      "properties": {
+        "familyId": {
+          "type": "string"
+        },
+        "userId": {
+          "type": "string"
+        },
+        "canRead": {
+          "type": "boolean"
+        },
+        "canEdit": {
+          "type": "boolean"
+        },
+        "canCreate": {
+          "type": "boolean"
+        },
+        "canModify": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pbAddToFamilyResponse": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/pbUser"
+        },
+        "permissions": {
+          "$ref": "#/definitions/pbPermissions"
+        }
+      }
+    },
+    "pbCreateFamilyRequest": {
+      "type": "object",
+      "properties": {
+        "familyName": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCreateFamilyResponse": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "$ref": "#/definitions/pbFamily"
+        },
+        "permissionToken": {
+          "type": "string"
+        }
+      }
+    },
     "pbCreateUserRequest": {
       "type": "object",
       "properties": {
@@ -151,6 +272,24 @@
       "properties": {
         "user": {
           "$ref": "#/definitions/pbUser"
+        }
+      }
+    },
+    "pbFamily": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
@@ -187,6 +326,26 @@
         "refreshTokenExpiresAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbPermissions": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "canRead": {
+          "type": "boolean"
+        },
+        "canEdit": {
+          "type": "boolean"
+        },
+        "canCreate": {
+          "type": "boolean"
+        },
+        "canModify": {
+          "type": "boolean"
         }
       }
     },

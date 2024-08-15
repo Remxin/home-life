@@ -9,7 +9,7 @@ import (
 )
 
 type PasetoMaker struct {
-	paseto *paseto.V2
+	paseto      *paseto.V2
 	symetricKey []byte
 }
 
@@ -19,7 +19,7 @@ func NewPasetoMaker(symmetricKey string) (Maker, error) {
 	}
 
 	maker := &PasetoMaker{
-		paseto: paseto.NewV2(),
+		paseto:      paseto.NewV2(),
 		symetricKey: []byte(symmetricKey),
 	}
 
@@ -46,11 +46,37 @@ func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
 	if err != nil {
 		return nil, err
 	}
-	
+
 	err = payload.Valid()
 	if err != nil {
 		return nil, err
 	}
 
+	return payload, nil
+}
+
+func (maker *PasetoMaker) CreatePermissionToken(user_id string, family_id string, permission_id string, duration time.Duration) (string, *PermissionPayload, error) {
+	payload, err := NewPermissionPayload(user_id, family_id, permission_id, duration)
+	if err != nil {
+		return "", nil, err
+	}
+	token, err := paseto.NewV2().Encrypt(maker.symetricKey, payload, nil)
+	if err != nil {
+		return "", nil, err
+	}
+
+	return token, payload, nil
+}
+
+func (maker *PasetoMaker) VerifyPermissionToken(token string) (*PermissionPayload, error) {
+	payload := &PermissionPayload{}
+	err := paseto.NewV2().Decrypt(token, maker.symetricKey, payload, nil)
+	if err != nil {
+		return nil, err
+	}
+	err = payload.Valid()
+	if err != nil {
+		return nil, err
+	}
 	return payload, nil
 }

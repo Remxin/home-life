@@ -4,7 +4,7 @@ CREATE TABLE "users" (
   "email" varchar UNIQUE NOT NULL,
   "hashed_password" varchar NOT NULL,
   "is_verified" boolean NOT NULL DEFAULT false,
-  "family" uuid DEFAULT null,
+  "family_id" uuid DEFAULT null,
   "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
   "created_at" timestamptz NOT NULL DEFAULT (now())
 );
@@ -12,21 +12,23 @@ CREATE TABLE "users" (
 CREATE TABLE "families" (
   "id" uuid PRIMARY KEY,
   "name" varchar NOT NULL,
-  "owner" uuid NOT NULL
+  "owner_id" uuid UNIQUE NOT NULL,
+  "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "permissions" (
   "id" uuid PRIMARY KEY,
   "can_read" boolean NOT NULL DEFAULT true,
-  "can_edit" boolean NOT NULL DEFAULT false,
-  "can_create" boolean NOT NULL DEFAULT true
+  "can_edit" boolean NOT NULL DEFAULT true,
+  "can_create" boolean NOT NULL DEFAULT false,
+  "can_modify" boolean NOT NULL DEFAULT false
 );
 
 CREATE TABLE "tasks" (
   "id" uuid PRIMARY KEY,
   "name" varchar NOT NULL,
   "description" varchar NOT NULL DEFAULT '',
-  "family" uuid NOT NULL,
+  "family_id" uuid NOT NULL,
   "created_by" uuid NOT NULL,
   "assigned_to" uuid DEFAULT null,
   "date" timestamptz NOT NULL,
@@ -63,13 +65,13 @@ CREATE TABLE "verify_emails" (
   "expired_at" timestamptz NOT NULL
 );
 
-ALTER TABLE "users" ADD FOREIGN KEY ("family") REFERENCES "families" ("id");
+ALTER TABLE "users" ADD FOREIGN KEY ("family_id") REFERENCES "families" ("id");
 
-ALTER TABLE "families" ADD FOREIGN KEY ("owner") REFERENCES "users" ("id");
+ALTER TABLE "families" ADD FOREIGN KEY ("owner_id") REFERENCES "users" ("id");
 
 ALTER TABLE "permissions" ADD FOREIGN KEY ("id") REFERENCES "users" ("id");
 
-ALTER TABLE "tasks" ADD FOREIGN KEY ("family") REFERENCES "families" ("id");
+ALTER TABLE "tasks" ADD FOREIGN KEY ("family_id") REFERENCES "families" ("id");
 
 ALTER TABLE "tasks" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
 

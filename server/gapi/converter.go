@@ -17,3 +17,12 @@ func convertUser(user db.User) *pb.User {
 		CreatedAt:         timestamppb.New(user.CreatedAt),
 	}
 }
+
+func convertFamily(family db.Family) *pb.Family {
+	return &pb.Family{
+		Id:        family.ID.String(),
+		Name:      family.Name,
+		OwnerId:   family.OwnerID.String(),
+		CreatedAt: timestamppb.New(family.CreatedAt),
+	}
+}

@@ -11,6 +11,7 @@ import (
 )
 
 type Querier interface {
+	AddUserToFamily(ctx context.Context, arg AddUserToFamilyParams) (User, error)
 	CreateFamily(ctx context.Context, arg CreateFamilyParams) (Family, error)
 	CreatePermissions(ctx context.Context, arg CreatePermissionsParams) (Permission, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)

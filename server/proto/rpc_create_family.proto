@@ -1,0 +1,15 @@
+syntax = "proto3";
+package pb;
+
+import "family.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message CreateFamilyRequest {
+    string family_name = 1;
+}
+
+message CreateFamilyResponse {
+    Family family = 1;
+    string permission_token = 2;
+}

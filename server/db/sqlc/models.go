@@ -11,9 +11,10 @@ import (
 )
 
 type Family struct {
-	ID    uuid.UUID `json:"id"`
-	Name  string    `json:"name"`
-	Owner uuid.UUID `json:"owner"`
+	ID        uuid.UUID `json:"id"`
+	Name      string    `json:"name"`
+	OwnerID   uuid.UUID `json:"owner_id"`
+	CreatedAt time.Time `json:"created_at"`
 }
 
 type Permission struct {
@@ -21,6 +22,7 @@ type Permission struct {
 	CanRead   bool      `json:"can_read"`
 	CanEdit   bool      `json:"can_edit"`
 	CanCreate bool      `json:"can_create"`
+	CanModify bool      `json:"can_modify"`
 }
 
 type Recipe struct {
@@ -47,7 +49,7 @@ type Task struct {
 	ID          uuid.UUID     `json:"id"`
 	Name        string        `json:"name"`
 	Description string        `json:"description"`
-	Family      uuid.UUID     `json:"family"`
+	FamilyID    uuid.UUID     `json:"family_id"`
 	CreatedBy   uuid.UUID     `json:"created_by"`
 	AssignedTo  uuid.NullUUID `json:"assigned_to"`
 	Date        time.Time     `json:"date"`
@@ -60,7 +62,7 @@ type User struct {
 	Email             string        `json:"email"`
 	HashedPassword    string        `json:"hashed_password"`
 	IsVerified        bool          `json:"is_verified"`
-	Family            uuid.NullUUID `json:"family"`
+	FamilyID          uuid.NullUUID `json:"family_id"`
 	PasswordChangedAt time.Time     `json:"password_changed_at"`
 	CreatedAt         time.Time     `json:"created_at"`
 }
