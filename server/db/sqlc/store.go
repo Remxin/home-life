@@ -10,6 +10,7 @@ type Store interface {
 	CreateUserTx(ctx context.Context, arg CreateUserTxParams) (CreateUserTxResult, error)
 	VerifyUserTx(ctx context.Context, arg VerifyEmailTxParams) (VerifyEmailTxResult, error)
 	CreateFamilyTx(ctx context.Context, arg CreateFamilyTxParams) (CreateFamilyTxResult, error)
+	AddUserToFamilyTx(ctx context.Context, arg AddUserToFamilyTxParams) (AddUserToFamilyTxResult, error)
 }
 
 type SQLStore struct {

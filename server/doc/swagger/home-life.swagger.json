@@ -93,12 +93,12 @@
       "post": {
         "summary": "Add user to a family",
         "description": "Use this API to add user to a family",
-        "operationId": "HomeLife_AddToFamily",
+        "operationId": "HomeLife_AddUserToFamily",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbAddToFamilyResponse"
+              "$ref": "#/definitions/pbAddUserToFamilyResponse"
             }
           },
           "default": {
@@ -114,7 +114,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbAddToFamilyRequest"
+              "$ref": "#/definitions/pbAddUserToFamilyRequest"
             }
           }
         ],
@@ -197,12 +197,9 @@
     }
   },
   "definitions": {
-    "pbAddToFamilyRequest": {
+    "pbAddUserToFamilyRequest": {
       "type": "object",
       "properties": {
-        "familyId": {
-          "type": "string"
-        },
         "userId": {
           "type": "string"
         },
@@ -220,7 +217,7 @@
         }
       }
     },
-    "pbAddToFamilyResponse": {
+    "pbAddUserToFamilyResponse": {
       "type": "object",
       "properties": {
         "user": {
@@ -359,6 +356,9 @@
           "type": "string"
         },
         "email": {
+          "type": "string"
+        },
+        "familyId": {
           "type": "string"
         },
         "passwordChangedAt": {

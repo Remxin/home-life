@@ -2,7 +2,6 @@ package gapi
 
 import (
 	"context"
-	"fmt"
 
 	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/pb"
@@ -37,12 +36,11 @@ func (server *Server) CreateFamily(ctx context.Context, req *pb.CreateFamilyRequ
 		}
 		return nil, status.Errorf(codes.Internal, "failed to create family: %s", err)
 	}
-	permissionToken, _, err := server.tokenMaker.CreatePermissionToken(tokenPayload.UserId, txResult.Family.Name, txResult.Permission.ID.String(), server.config.AccessTokenDuration)
+	permissionToken, _, err := server.tokenMaker.CreatePermissionToken(tokenPayload.UserId, txResult.Family.ID.String(), txResult.Permission.ID.String(), server.config.AccessTokenDuration)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "cannot create permission token")
 	}
 
-	fmt.Println(txResult.Family)
 	res := &pb.CreateFamilyResponse{
 		Family:          convertFamily(txResult.Family),
 		PermissionToken: permissionToken,

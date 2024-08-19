@@ -35,6 +35,17 @@ func (store *SQLStore) CreateFamilyTx(ctx context.Context, arg CreateFamilyTxPar
 			return fmt.Errorf("cannot create family: %w", err)
 		}
 
+		_, err = queries.AddUserToFamily(ctx, AddUserToFamilyParams{
+			UserID: UserID,
+			FamilyID: uuid.NullUUID{
+				UUID:  result.Family.ID,
+				Valid: true,
+			},
+		})
+		if err != nil {
+			return fmt.Errorf("cannot update user's family: %w", err)
+		}
+
 		result.Permission, err = queries.CreatePermissions(ctx, CreatePermissionsParams{
 			ID:        UserID,
 			CanRead:   true,

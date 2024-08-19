@@ -19,11 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	HomeLife_CreateUser_FullMethodName   = "/pb.HomeLife/CreateUser"
-	HomeLife_VerifyUser_FullMethodName   = "/pb.HomeLife/VerifyUser"
-	HomeLife_LoginUser_FullMethodName    = "/pb.HomeLife/LoginUser"
-	HomeLife_CreateFamily_FullMethodName = "/pb.HomeLife/CreateFamily"
-	HomeLife_AddToFamily_FullMethodName  = "/pb.HomeLife/AddToFamily"
+	HomeLife_CreateUser_FullMethodName      = "/pb.HomeLife/CreateUser"
+	HomeLife_VerifyUser_FullMethodName      = "/pb.HomeLife/VerifyUser"
+	HomeLife_LoginUser_FullMethodName       = "/pb.HomeLife/LoginUser"
+	HomeLife_CreateFamily_FullMethodName    = "/pb.HomeLife/CreateFamily"
+	HomeLife_AddUserToFamily_FullMethodName = "/pb.HomeLife/AddUserToFamily"
 )
 
 // HomeLifeClient is the client API for HomeLife service.
@@ -34,7 +34,7 @@ type HomeLifeClient interface {
 	VerifyUser(ctx context.Context, in *VerifyUserRequest, opts ...grpc.CallOption) (*VerifyUserResponse, error)
 	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
 	CreateFamily(ctx context.Context, in *CreateFamilyRequest, opts ...grpc.CallOption) (*CreateFamilyResponse, error)
-	AddToFamily(ctx context.Context, in *AddToFamilyRequest, opts ...grpc.CallOption) (*AddToFamilyResponse, error)
+	AddUserToFamily(ctx context.Context, in *AddUserToFamilyRequest, opts ...grpc.CallOption) (*AddUserToFamilyResponse, error)
 }
 
 type homeLifeClient struct {
@@ -85,10 +85,10 @@ func (c *homeLifeClient) CreateFamily(ctx context.Context, in *CreateFamilyReque
 	return out, nil
 }
 
-func (c *homeLifeClient) AddToFamily(ctx context.Context, in *AddToFamilyRequest, opts ...grpc.CallOption) (*AddToFamilyResponse, error) {
+func (c *homeLifeClient) AddUserToFamily(ctx context.Context, in *AddUserToFamilyRequest, opts ...grpc.CallOption) (*AddUserToFamilyResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AddToFamilyResponse)
-	err := c.cc.Invoke(ctx, HomeLife_AddToFamily_FullMethodName, in, out, cOpts...)
+	out := new(AddUserToFamilyResponse)
+	err := c.cc.Invoke(ctx, HomeLife_AddUserToFamily_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ type HomeLifeServer interface {
 	VerifyUser(context.Context, *VerifyUserRequest) (*VerifyUserResponse, error)
 	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
 	CreateFamily(context.Context, *CreateFamilyRequest) (*CreateFamilyResponse, error)
-	AddToFamily(context.Context, *AddToFamilyRequest) (*AddToFamilyResponse, error)
+	AddUserToFamily(context.Context, *AddUserToFamilyRequest) (*AddUserToFamilyResponse, error)
 	mustEmbedUnimplementedHomeLifeServer()
 }
 
@@ -123,8 +123,8 @@ func (UnimplementedHomeLifeServer) LoginUser(context.Context, *LoginUserRequest)
 func (UnimplementedHomeLifeServer) CreateFamily(context.Context, *CreateFamilyRequest) (*CreateFamilyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateFamily not implemented")
 }
-func (UnimplementedHomeLifeServer) AddToFamily(context.Context, *AddToFamilyRequest) (*AddToFamilyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddToFamily not implemented")
+func (UnimplementedHomeLifeServer) AddUserToFamily(context.Context, *AddUserToFamilyRequest) (*AddUserToFamilyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUserToFamily not implemented")
 }
 func (UnimplementedHomeLifeServer) mustEmbedUnimplementedHomeLifeServer() {}
 
@@ -211,20 +211,20 @@ func _HomeLife_CreateFamily_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HomeLife_AddToFamily_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddToFamilyRequest)
+func _HomeLife_AddUserToFamily_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddUserToFamilyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HomeLifeServer).AddToFamily(ctx, in)
+		return srv.(HomeLifeServer).AddUserToFamily(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: HomeLife_AddToFamily_FullMethodName,
+		FullMethod: HomeLife_AddUserToFamily_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HomeLifeServer).AddToFamily(ctx, req.(*AddToFamilyRequest))
+		return srv.(HomeLifeServer).AddUserToFamily(ctx, req.(*AddUserToFamilyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -253,8 +253,8 @@ var HomeLife_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HomeLife_CreateFamily_Handler,
 		},
 		{
-			MethodName: "AddToFamily",
-			Handler:    _HomeLife_AddToFamily_Handler,
+			MethodName: "AddUserToFamily",
+			Handler:    _HomeLife_AddUserToFamily_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

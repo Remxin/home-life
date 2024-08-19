@@ -7,7 +7,7 @@ import "rpc_create_user.proto";
 import "rpc_verify_user.proto";
 import "rpc_login_user.proto";
 import "rpc_create_family.proto";
-import "rpc_add_to_family.proto";
+import "rpc_add_user_to_family.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/Remxin/home-life/server/pb";
@@ -70,7 +70,7 @@ service HomeLife {
         };
     }
 
-    rpc AddToFamily (AddToFamilyRequest) returns (AddToFamilyResponse) {
+    rpc AddUserToFamily (AddUserToFamilyRequest) returns (AddUserToFamilyResponse) {
         option (google.api.http) = {
             post: "/v1/family/add_user"
             body: "*"
