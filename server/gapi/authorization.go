@@ -12,6 +12,7 @@ import (
 const (
 	authorizationHeader = "authorization"
 	authorizationBearer = "bearer"
+	permission_token    = "permission_token"
 )
 
 func (server *Server) authorizeUser(ctx context.Context) (*token.Payload, error) {
@@ -27,7 +28,6 @@ func (server *Server) authorizeUser(ctx context.Context) (*token.Payload, error)
 
 	authHeader := values[0]
 	fields := strings.Fields(authHeader)
-	fmt.Println(fields)
 	if len(fields) < 2 {
 		return nil, fmt.Errorf("invalid authorization header format")
 	}
@@ -47,6 +47,21 @@ func (server *Server) authorizeUser(ctx context.Context) (*token.Payload, error)
 }
 
 // TODO: get permission token from request
-// func (server *Server) getPermissionsToken(ctx context.Context) (*token.PermissionPayload, error) {
+func (server *Server) getPermissions(ctx context.Context) (*token.PermissionPayload, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("could not get request from context")
+	}
 
-// }
+	permissionTokenCookie := md[permission_token]
+	if len(permissionTokenCookie) == 0 {
+		return nil, fmt.Errorf("permission token not found")
+	}
+
+	permissions, err := server.tokenMaker.VerifyPermissionToken(permissionTokenCookie[0])
+	if err != nil {
+		return nil, fmt.Errorf("permission token is not valid: %w", err)
+	}
+	fmt.Println(permissions.FamilyId)
+	return permissions, nil
+}

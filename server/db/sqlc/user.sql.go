@@ -23,11 +23,11 @@ RETURNING id, full_name, email, hashed_password, is_verified, family_id, passwor
 
 type AddUserToFamilyParams struct {
 	FamilyID uuid.NullUUID `json:"family_id"`
-	ID       uuid.UUID     `json:"id"`
+	UserID   uuid.UUID     `json:"user_id"`
 }
 
 func (q *Queries) AddUserToFamily(ctx context.Context, arg AddUserToFamilyParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, addUserToFamily, arg.FamilyID, arg.ID)
+	row := q.db.QueryRowContext(ctx, addUserToFamily, arg.FamilyID, arg.UserID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -124,17 +124,19 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE "users"
 SET
     hashed_password = COALESCE($1, hashed_password),
-    password_changed_at = COALESCE($2, password_changed_at),
-    full_name = COALESCE($3, full_name),
-    email = COALESCE($4, email),
-    is_verified = COALESCE($5, is_verified)
+    family_id = COALESCE($2, family_id),
+    password_changed_at = COALESCE($3, password_changed_at),
+    full_name = COALESCE($4, full_name),
+    email = COALESCE($5, email),
+    is_verified = COALESCE($6, is_verified)
 WHERE
-    id = $6
+    id = $7
 RETURNING id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at
 `
 
 type UpdateUserParams struct {
 	HashedPassword    sql.NullString `json:"hashed_password"`
+	FamilyID          uuid.NullUUID  `json:"family_id"`
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	FullName          sql.NullString `json:"full_name"`
 	Email             sql.NullString `json:"email"`
@@ -145,6 +147,7 @@ type UpdateUserParams struct {
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, updateUser,
 		arg.HashedPassword,
+		arg.FamilyID,
 		arg.PasswordChangedAt,
 		arg.FullName,
 		arg.Email,
