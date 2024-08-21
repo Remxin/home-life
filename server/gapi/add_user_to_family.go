@@ -38,7 +38,7 @@ func (server *Server) AddUserToFamily(ctx context.Context, req *pb.AddUserToFami
 	}
 	userID, err := uuid.Parse(req.UserId)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to convert user_id to UUID")
+		return nil, status.Errorf(codes.InvalidArgument, "failed to convert user_id to UUID")
 	}
 
 	permission, err := server.store.CreatePermissions(ctx, db.CreatePermissionsParams{

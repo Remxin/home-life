@@ -37,19 +37,20 @@ func (server *Server) AddTask(ctx context.Context, req *pb.AddTaskRequest) (*pb.
 
 	userID, err := uuid.Parse(userPermissions.UserId)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot parse user_id UUID: %s", err)
-	}
-	assigned, err := uuid.Parse(req.AssignedTo)
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot parse assigned_to UUID: %s", err)
+		return nil, status.Errorf(codes.InvalidArgument, "cannot parse user_id UUID: %s", err)
 	}
 
 	var assignedTo uuid.NullUUID
 	if len(req.AssignedTo) == 0 {
 		assignedTo = uuid.NullUUID{
+			UUID:  uuid.UUID{},
 			Valid: false,
 		}
 	} else {
+		assigned, err := uuid.Parse(req.AssignedTo)
+		if err != nil {
+			return nil, status.Errorf(codes.InvalidArgument, "cannot parse assigned_to UUID: %s", err)
+		}
 		assignedTo = uuid.NullUUID{
 			Valid: true,
 			UUID:  assigned,
