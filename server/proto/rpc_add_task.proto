@@ -1,0 +1,18 @@
+syntax = "proto3";
+package pb;
+
+import "task.proto";
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message AddTaskRequest {
+    string name = 1;
+    string description = 2;
+    string assigned_to = 3;
+    google.protobuf.Timestamp  execution_date = 4;
+}
+
+message AddTaskResponse {
+    Task task = 1;
+}

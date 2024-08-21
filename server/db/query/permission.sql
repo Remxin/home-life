@@ -1,12 +1,14 @@
 -- name: CreatePermissions :one
 INSERT INTO "permissions" (
     id,
+    family_id,
     can_read,
     can_edit,
     can_create,
     can_modify
 ) VALUES (
     @id,
+    @family_id,
     @can_read,
     @can_edit,
     @can_create,

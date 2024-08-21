@@ -23,7 +23,6 @@ WHERE email = @email LIMIT 1;
 UPDATE "users"
 SET
     hashed_password = COALESCE(sqlc.narg(hashed_password), hashed_password),
-    family_id = COALESCE(sqlc.narg(family_id), family_id),
     password_changed_at = COALESCE(sqlc.narg(password_changed_at), password_changed_at),
     full_name = COALESCE(sqlc.narg(full_name), full_name),
     email = COALESCE(sqlc.narg(email), email),
@@ -32,13 +31,6 @@ WHERE
     id = sqlc.arg(id)
 RETURNING *;
 
--- name: AddUserToFamily :one
-UPDATE "users"
-SET
-    family_id = @family_id
-WHERE
-    id = @user_id
-RETURNING *;
 
 
 

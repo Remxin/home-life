@@ -55,8 +55,8 @@ func (maker *PasetoMaker) VerifyToken(token string) (*Payload, error) {
 	return payload, nil
 }
 
-func (maker *PasetoMaker) CreatePermissionToken(user_id string, family_id string, permission_id string, duration time.Duration) (string, *PermissionPayload, error) {
-	payload, err := NewPermissionPayload(user_id, family_id, permission_id, duration)
+func (maker *PasetoMaker) CreatePermissionToken(user_id string, permission_id string, duration time.Duration) (string, *PermissionPayload, error) {
+	payload, err := NewPermissionPayload(user_id, permission_id, duration)
 	if err != nil {
 		return "", nil, err
 	}

@@ -28,10 +28,11 @@ Table tasks as T {
   id uuid [pk]
   name varchar [not null]
   description varchar [not null, default: ""]
+  done boolean [not null, default: false]
   family_id uuid [ref: > F.id, not null]
   created_by uuid [ref: > U.id, not null]
   assigned_to uuid [ref: > U.id, default: null]
-  date timestamptz [not null]
+  execution_date timestamptz [not null]
   created_at timestamptz [not null, default: `now()`]
 }
 

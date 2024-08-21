@@ -1,0 +1,14 @@
+syntax = "proto3";
+package pb;
+
+import "task.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message DeleteTaskRequest {
+    string task_id = 1;
+}
+
+message DeleteTaskResponse {
+    Task task = 1;
+}

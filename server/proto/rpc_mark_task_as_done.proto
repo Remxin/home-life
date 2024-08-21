@@ -1,0 +1,14 @@
+syntax = "proto3";
+package pb;
+
+import "task.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message MarkTaskAsDoneRequest {
+    string task_id = 1;
+}
+
+message MarkTaskAsDoneResponse {
+    Task task = 1;
+}

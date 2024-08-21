@@ -11,17 +11,21 @@ import (
 )
 
 type Querier interface {
-	AddUserToFamily(ctx context.Context, arg AddUserToFamilyParams) (User, error)
+	AddTask(ctx context.Context, arg AddTaskParams) (Task, error)
+	AssignTask(ctx context.Context, arg AssignTaskParams) (Task, error)
 	CreateFamily(ctx context.Context, arg CreateFamilyParams) (Family, error)
 	CreatePermissions(ctx context.Context, arg CreatePermissionsParams) (Permission, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmail, error)
-	GetMembers(ctx context.Context, familyID uuid.NullUUID) ([]GetMembersRow, error)
+	DeleteTask(ctx context.Context, id uuid.UUID) (Task, error)
+	GetMembers(ctx context.Context, familyID uuid.UUID) ([]GetMembersRow, error)
 	GetPermissions(ctx context.Context, id uuid.UUID) (Permission, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
+	GetTasks(ctx context.Context, arg GetTasksParams) ([]Task, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserById(ctx context.Context, id uuid.UUID) (User, error)
+	MarkTaskAsDone(ctx context.Context, id uuid.UUID) (Task, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
 	UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailParams) (VerifyEmail, error)
 }

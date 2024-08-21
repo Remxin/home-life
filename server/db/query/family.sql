@@ -10,5 +10,7 @@ INSERT INTO "families" (
 ) RETURNING *;
 
 -- name: GetMembers :many
-SELECT id, full_name, email, is_verified, created_at FROM "users"
-WHERE family_id = @family_id;
+SELECT * 
+FROM users 
+INNER JOIN permissions p USING (id) 
+WHERE p.family_id = @family_id;

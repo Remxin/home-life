@@ -2,7 +2,6 @@ package gapi
 
 import (
 	"context"
-	"fmt"
 
 	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/pb"
@@ -34,24 +33,17 @@ func (server *Server) AddUserToFamily(ctx context.Context, req *pb.AddUserToFami
 		return nil, status.Errorf(codes.Unauthenticated, "wrong user permissions token")
 	}
 
-	userID, err := uuid.Parse(permissionPayload.UserId)
-
-	if err != nil {
-		return nil, status.Errorf(codes.Internal, "cannot convert userID to UUID: %s", err)
-	}
-
-	permissions, err := server.store.GetPermissions(ctx, userID)
-	if err != nil {
-		return nil, status.Errorf(codes.NotFound, "cannot receive user permissions: %s", err)
-	}
-
-	if !permissions.CanModify {
+	if !permissionPayload.CanModify {
 		return nil, status.Error(codes.PermissionDenied, "cannot add member to a family: insufficient permissions")
 	}
+	userID, err := uuid.Parse(req.UserId)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to convert user_id to UUID")
+	}
 
-	txResult, err := server.store.AddUserToFamilyTx(ctx, db.AddUserToFamilyTxParams{
-		UserID:    req.UserId,
-		FamilyID:  permissionPayload.FamilyId,
+	permission, err := server.store.CreatePermissions(ctx, db.CreatePermissionsParams{
+		ID:        userID,
+		FamilyID:  permissionPayload.FamilyID,
 		CanRead:   req.CanRead,
 		CanEdit:   req.CanEdit,
 		CanCreate: req.CanCreate,
@@ -67,10 +59,8 @@ func (server *Server) AddUserToFamily(ctx context.Context, req *pb.AddUserToFami
 		}
 		return nil, status.Errorf(codes.Internal, "failed to to add user to family: %s", err)
 	}
-	fmt.Println(txResult.User)
 	res := &pb.AddUserToFamilyResponse{
-		User:        convertUser(txResult.User),
-		Permissions: convertPermission(txResult.Permission),
+		Permissions: convertPermission(permission),
 	}
 	return res, nil
 }
