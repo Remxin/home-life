@@ -35,19 +35,9 @@ func (store *SQLStore) AddUserToFamilyTx(ctx context.Context, arg AddUserToFamil
 			return fmt.Errorf("error in FamiliyID conversion to UUID: %w", err)
 		}
 
-		result.User, err = queries.AddUserToFamily(ctx, AddUserToFamilyParams{
-			FamilyID: uuid.NullUUID{
-				UUID:  FamilyID,
-				Valid: true,
-			},
-			UserID: UserID,
-		})
-		if err != nil {
-			return fmt.Errorf("cannot create family: %w", err)
-		}
-
 		result.Permission, err = queries.CreatePermissions(ctx, CreatePermissionsParams{
 			ID:        UserID,
+			FamilyID:  FamilyID,
 			CanRead:   arg.CanRead,
 			CanEdit:   arg.CanEdit,
 			CanCreate: arg.CanCreate,

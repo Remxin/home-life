@@ -21,7 +21,6 @@ type Payload struct {
 
 type PermissionPayload struct {
 	UserId       string    `json:"user_id"`
-	FamilyId     string    `json:"family_id"`
 	PermissionId string    `json:"permission_id"`
 	IssuedAt     time.Time `json:"issued_at"`
 	ExpiredAt    time.Time `json:"expired_at"`
@@ -51,10 +50,9 @@ func (payload *Payload) Valid() error {
 	return nil
 }
 
-func NewPermissionPayload(user_id string, family_id string, permission_id string, duration time.Duration) (*PermissionPayload, error) {
+func NewPermissionPayload(user_id string, permission_id string, duration time.Duration) (*PermissionPayload, error) {
 	payload := &PermissionPayload{
 		UserId:       user_id,
-		FamilyId:     family_id,
 		PermissionId: permission_id,
 		IssuedAt:     time.Now(),
 		ExpiredAt:    time.Now().Add(duration),

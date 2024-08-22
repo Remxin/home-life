@@ -157,6 +157,187 @@
         ]
       }
     },
+    "/v1/task": {
+      "get": {
+        "summary": "Assign task",
+        "description": "Use this API to assign a task to a family member",
+        "operationId": "HomeLife_GetTasks",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetTasksResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "searchBy",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "FAMILY_ID",
+              "ASSIGNED_TO"
+            ],
+            "default": "FAMILY_ID"
+          },
+          {
+            "name": "dateFrom",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          },
+          {
+            "name": "dateTo",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "date-time"
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      },
+      "delete": {
+        "summary": "Delete task",
+        "description": "Use this API to delete task",
+        "operationId": "HomeLife_DeleteTask",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteTaskResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "taskId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      },
+      "post": {
+        "summary": "Add new task",
+        "description": "Use this API to add a new task",
+        "operationId": "HomeLife_AddTask",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAddTaskResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbAddTaskRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
+    "/v1/task/assign": {
+      "post": {
+        "summary": "Assign task",
+        "description": "Use this API to assign a task to a family member",
+        "operationId": "HomeLife_AssignTask",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbAssignTaskResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbAssignTaskRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
+    "/v1/task/mark-as-done": {
+      "post": {
+        "summary": "Mark task as done",
+        "description": "Use this API to mark task as done",
+        "operationId": "HomeLife_MarkTaskAsDone",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbMarkTaskAsDoneResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbMarkTaskAsDoneRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
     "/v1/verify_user": {
       "get": {
         "summary": "Verify user email",
@@ -197,6 +378,32 @@
     }
   },
   "definitions": {
+    "pbAddTaskRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "assignedTo": {
+          "type": "string"
+        },
+        "executionDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbAddTaskResponse": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/definitions/pbTask"
+        }
+      }
+    },
     "pbAddUserToFamilyRequest": {
       "type": "object",
       "properties": {
@@ -220,11 +427,27 @@
     "pbAddUserToFamilyResponse": {
       "type": "object",
       "properties": {
-        "user": {
-          "$ref": "#/definitions/pbUser"
-        },
         "permissions": {
           "$ref": "#/definitions/pbPermissions"
+        }
+      }
+    },
+    "pbAssignTaskRequest": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string"
+        },
+        "assigneeId": {
+          "type": "string"
+        }
+      }
+    },
+    "pbAssignTaskResponse": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/definitions/pbTask"
         }
       }
     },
@@ -272,6 +495,14 @@
         }
       }
     },
+    "pbDeleteTaskResponse": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/definitions/pbTask"
+        }
+      }
+    },
     "pbFamily": {
       "type": "object",
       "properties": {
@@ -287,6 +518,18 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbGetTasksResponse": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbTask"
+          }
         }
       }
     },
@@ -326,10 +569,29 @@
         }
       }
     },
+    "pbMarkTaskAsDoneRequest": {
+      "type": "object",
+      "properties": {
+        "taskId": {
+          "type": "string"
+        }
+      }
+    },
+    "pbMarkTaskAsDoneResponse": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "$ref": "#/definitions/pbTask"
+        }
+      }
+    },
     "pbPermissions": {
       "type": "object",
       "properties": {
         "id": {
+          "type": "string"
+        },
+        "familyId": {
           "type": "string"
         },
         "canRead": {
@@ -346,6 +608,48 @@
         }
       }
     },
+    "pbSearchBy": {
+      "type": "string",
+      "enum": [
+        "FAMILY_ID",
+        "ASSIGNED_TO"
+      ],
+      "default": "FAMILY_ID"
+    },
+    "pbTask": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "done": {
+          "type": "boolean"
+        },
+        "familyId": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "assignedTo": {
+          "type": "string"
+        },
+        "executionDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
     "pbUser": {
       "type": "object",
       "properties": {
@@ -356,9 +660,6 @@
           "type": "string"
         },
         "email": {
-          "type": "string"
-        },
-        "familyId": {
           "type": "string"
         },
         "passwordChangedAt": {

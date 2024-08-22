@@ -5,8 +5,9 @@ option go_package = "github.com/Remxin/home-life/server/pb";
 
 message Permissions {
     string id = 1;
-    bool can_read = 2;
-    bool can_edit = 3;
-    bool can_create = 4;
-    bool can_modify = 5;
+    string family_id = 2;
+    bool can_read = 3;
+    bool can_edit = 4;
+    bool can_create = 5;
+    bool can_modify = 6;
 }

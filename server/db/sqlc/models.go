@@ -19,6 +19,7 @@ type Family struct {
 
 type Permission struct {
 	ID        uuid.UUID `json:"id"`
+	FamilyID  uuid.UUID `json:"family_id"`
 	CanRead   bool      `json:"can_read"`
 	CanEdit   bool      `json:"can_edit"`
 	CanCreate bool      `json:"can_create"`
@@ -46,25 +47,25 @@ type Session struct {
 }
 
 type Task struct {
-	ID          uuid.UUID     `json:"id"`
-	Name        string        `json:"name"`
-	Description string        `json:"description"`
-	FamilyID    uuid.UUID     `json:"family_id"`
-	CreatedBy   uuid.UUID     `json:"created_by"`
-	AssignedTo  uuid.NullUUID `json:"assigned_to"`
-	Date        time.Time     `json:"date"`
-	CreatedAt   time.Time     `json:"created_at"`
+	ID            uuid.UUID     `json:"id"`
+	Name          string        `json:"name"`
+	Description   string        `json:"description"`
+	Done          bool          `json:"done"`
+	FamilyID      uuid.UUID     `json:"family_id"`
+	CreatedBy     uuid.UUID     `json:"created_by"`
+	AssignedTo    uuid.NullUUID `json:"assigned_to"`
+	ExecutionDate time.Time     `json:"execution_date"`
+	CreatedAt     time.Time     `json:"created_at"`
 }
 
 type User struct {
-	ID                uuid.UUID     `json:"id"`
-	FullName          string        `json:"full_name"`
-	Email             string        `json:"email"`
-	HashedPassword    string        `json:"hashed_password"`
-	IsVerified        bool          `json:"is_verified"`
-	FamilyID          uuid.NullUUID `json:"family_id"`
-	PasswordChangedAt time.Time     `json:"password_changed_at"`
-	CreatedAt         time.Time     `json:"created_at"`
+	ID                uuid.UUID `json:"id"`
+	FullName          string    `json:"full_name"`
+	Email             string    `json:"email"`
+	HashedPassword    string    `json:"hashed_password"`
+	IsVerified        bool      `json:"is_verified"`
+	PasswordChangedAt time.Time `json:"password_changed_at"`
+	CreatedAt         time.Time `json:"created_at"`
 }
 
 type VerifyEmail struct {

@@ -12,36 +12,6 @@ import (
 	"github.com/google/uuid"
 )
 
-const addUserToFamily = `-- name: AddUserToFamily :one
-UPDATE "users"
-SET
-    family_id = $1
-WHERE
-    id = $2
-RETURNING id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at
-`
-
-type AddUserToFamilyParams struct {
-	FamilyID uuid.NullUUID `json:"family_id"`
-	UserID   uuid.UUID     `json:"user_id"`
-}
-
-func (q *Queries) AddUserToFamily(ctx context.Context, arg AddUserToFamilyParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, addUserToFamily, arg.FamilyID, arg.UserID)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.FullName,
-		&i.Email,
-		&i.HashedPassword,
-		&i.IsVerified,
-		&i.FamilyID,
-		&i.PasswordChangedAt,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
 const createUser = `-- name: CreateUser :one
 INSERT INTO users (
     id,
@@ -53,7 +23,7 @@ INSERT INTO users (
     $1,
     $2,
     $3
-) RETURNING id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at
+) RETURNING id, full_name, email, hashed_password, is_verified, password_changed_at, created_at
 `
 
 type CreateUserParams struct {
@@ -71,7 +41,6 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 		&i.Email,
 		&i.HashedPassword,
 		&i.IsVerified,
-		&i.FamilyID,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
@@ -79,7 +48,7 @@ func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, e
 }
 
 const getUserByEmail = `-- name: GetUserByEmail :one
-SELECT id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at FROM "users"
+SELECT id, full_name, email, hashed_password, is_verified, password_changed_at, created_at FROM "users"
 WHERE email = $1 LIMIT 1
 `
 
@@ -92,7 +61,6 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 		&i.Email,
 		&i.HashedPassword,
 		&i.IsVerified,
-		&i.FamilyID,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
@@ -100,7 +68,7 @@ func (q *Queries) GetUserByEmail(ctx context.Context, email string) (User, error
 }
 
 const getUserById = `-- name: GetUserById :one
-SELECT id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at FROM "users"
+SELECT id, full_name, email, hashed_password, is_verified, password_changed_at, created_at FROM "users"
 WHERE id = $1 LIMIT 1
 `
 
@@ -113,7 +81,6 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
 		&i.Email,
 		&i.HashedPassword,
 		&i.IsVerified,
-		&i.FamilyID,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)
@@ -124,19 +91,17 @@ const updateUser = `-- name: UpdateUser :one
 UPDATE "users"
 SET
     hashed_password = COALESCE($1, hashed_password),
-    family_id = COALESCE($2, family_id),
-    password_changed_at = COALESCE($3, password_changed_at),
-    full_name = COALESCE($4, full_name),
-    email = COALESCE($5, email),
-    is_verified = COALESCE($6, is_verified)
+    password_changed_at = COALESCE($2, password_changed_at),
+    full_name = COALESCE($3, full_name),
+    email = COALESCE($4, email),
+    is_verified = COALESCE($5, is_verified)
 WHERE
-    id = $7
-RETURNING id, full_name, email, hashed_password, is_verified, family_id, password_changed_at, created_at
+    id = $6
+RETURNING id, full_name, email, hashed_password, is_verified, password_changed_at, created_at
 `
 
 type UpdateUserParams struct {
 	HashedPassword    sql.NullString `json:"hashed_password"`
-	FamilyID          uuid.NullUUID  `json:"family_id"`
 	PasswordChangedAt sql.NullTime   `json:"password_changed_at"`
 	FullName          sql.NullString `json:"full_name"`
 	Email             sql.NullString `json:"email"`
@@ -147,7 +112,6 @@ type UpdateUserParams struct {
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
 	row := q.db.QueryRowContext(ctx, updateUser,
 		arg.HashedPassword,
-		arg.FamilyID,
 		arg.PasswordChangedAt,
 		arg.FullName,
 		arg.Email,
@@ -161,7 +125,6 @@ func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, e
 		&i.Email,
 		&i.HashedPassword,
 		&i.IsVerified,
-		&i.FamilyID,
 		&i.PasswordChangedAt,
 		&i.CreatedAt,
 	)

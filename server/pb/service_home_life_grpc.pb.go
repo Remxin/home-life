@@ -24,6 +24,11 @@ const (
 	HomeLife_LoginUser_FullMethodName       = "/pb.HomeLife/LoginUser"
 	HomeLife_CreateFamily_FullMethodName    = "/pb.HomeLife/CreateFamily"
 	HomeLife_AddUserToFamily_FullMethodName = "/pb.HomeLife/AddUserToFamily"
+	HomeLife_AddTask_FullMethodName         = "/pb.HomeLife/AddTask"
+	HomeLife_MarkTaskAsDone_FullMethodName  = "/pb.HomeLife/MarkTaskAsDone"
+	HomeLife_DeleteTask_FullMethodName      = "/pb.HomeLife/DeleteTask"
+	HomeLife_AssignTask_FullMethodName      = "/pb.HomeLife/AssignTask"
+	HomeLife_GetTasks_FullMethodName        = "/pb.HomeLife/GetTasks"
 )
 
 // HomeLifeClient is the client API for HomeLife service.
@@ -35,6 +40,11 @@ type HomeLifeClient interface {
 	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
 	CreateFamily(ctx context.Context, in *CreateFamilyRequest, opts ...grpc.CallOption) (*CreateFamilyResponse, error)
 	AddUserToFamily(ctx context.Context, in *AddUserToFamilyRequest, opts ...grpc.CallOption) (*AddUserToFamilyResponse, error)
+	AddTask(ctx context.Context, in *AddTaskRequest, opts ...grpc.CallOption) (*AddTaskResponse, error)
+	MarkTaskAsDone(ctx context.Context, in *MarkTaskAsDoneRequest, opts ...grpc.CallOption) (*MarkTaskAsDoneResponse, error)
+	DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*DeleteTaskResponse, error)
+	AssignTask(ctx context.Context, in *AssignTaskRequest, opts ...grpc.CallOption) (*AssignTaskResponse, error)
+	GetTasks(ctx context.Context, in *GetTasksRequest, opts ...grpc.CallOption) (*GetTasksResponse, error)
 }
 
 type homeLifeClient struct {
@@ -95,6 +105,56 @@ func (c *homeLifeClient) AddUserToFamily(ctx context.Context, in *AddUserToFamil
 	return out, nil
 }
 
+func (c *homeLifeClient) AddTask(ctx context.Context, in *AddTaskRequest, opts ...grpc.CallOption) (*AddTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AddTaskResponse)
+	err := c.cc.Invoke(ctx, HomeLife_AddTask_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) MarkTaskAsDone(ctx context.Context, in *MarkTaskAsDoneRequest, opts ...grpc.CallOption) (*MarkTaskAsDoneResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(MarkTaskAsDoneResponse)
+	err := c.cc.Invoke(ctx, HomeLife_MarkTaskAsDone_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*DeleteTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteTaskResponse)
+	err := c.cc.Invoke(ctx, HomeLife_DeleteTask_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) AssignTask(ctx context.Context, in *AssignTaskRequest, opts ...grpc.CallOption) (*AssignTaskResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AssignTaskResponse)
+	err := c.cc.Invoke(ctx, HomeLife_AssignTask_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) GetTasks(ctx context.Context, in *GetTasksRequest, opts ...grpc.CallOption) (*GetTasksResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetTasksResponse)
+	err := c.cc.Invoke(ctx, HomeLife_GetTasks_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HomeLifeServer is the server API for HomeLife service.
 // All implementations must embed UnimplementedHomeLifeServer
 // for forward compatibility
@@ -104,6 +164,11 @@ type HomeLifeServer interface {
 	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
 	CreateFamily(context.Context, *CreateFamilyRequest) (*CreateFamilyResponse, error)
 	AddUserToFamily(context.Context, *AddUserToFamilyRequest) (*AddUserToFamilyResponse, error)
+	AddTask(context.Context, *AddTaskRequest) (*AddTaskResponse, error)
+	MarkTaskAsDone(context.Context, *MarkTaskAsDoneRequest) (*MarkTaskAsDoneResponse, error)
+	DeleteTask(context.Context, *DeleteTaskRequest) (*DeleteTaskResponse, error)
+	AssignTask(context.Context, *AssignTaskRequest) (*AssignTaskResponse, error)
+	GetTasks(context.Context, *GetTasksRequest) (*GetTasksResponse, error)
 	mustEmbedUnimplementedHomeLifeServer()
 }
 
@@ -125,6 +190,21 @@ func (UnimplementedHomeLifeServer) CreateFamily(context.Context, *CreateFamilyRe
 }
 func (UnimplementedHomeLifeServer) AddUserToFamily(context.Context, *AddUserToFamilyRequest) (*AddUserToFamilyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUserToFamily not implemented")
+}
+func (UnimplementedHomeLifeServer) AddTask(context.Context, *AddTaskRequest) (*AddTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddTask not implemented")
+}
+func (UnimplementedHomeLifeServer) MarkTaskAsDone(context.Context, *MarkTaskAsDoneRequest) (*MarkTaskAsDoneResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method MarkTaskAsDone not implemented")
+}
+func (UnimplementedHomeLifeServer) DeleteTask(context.Context, *DeleteTaskRequest) (*DeleteTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteTask not implemented")
+}
+func (UnimplementedHomeLifeServer) AssignTask(context.Context, *AssignTaskRequest) (*AssignTaskResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssignTask not implemented")
+}
+func (UnimplementedHomeLifeServer) GetTasks(context.Context, *GetTasksRequest) (*GetTasksResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetTasks not implemented")
 }
 func (UnimplementedHomeLifeServer) mustEmbedUnimplementedHomeLifeServer() {}
 
@@ -229,6 +309,96 @@ func _HomeLife_AddUserToFamily_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HomeLife_AddTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).AddTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_AddTask_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).AddTask(ctx, req.(*AddTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_MarkTaskAsDone_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MarkTaskAsDoneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).MarkTaskAsDone(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_MarkTaskAsDone_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).MarkTaskAsDone(ctx, req.(*MarkTaskAsDoneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_DeleteTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).DeleteTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_DeleteTask_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).DeleteTask(ctx, req.(*DeleteTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_AssignTask_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssignTaskRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).AssignTask(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_AssignTask_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).AssignTask(ctx, req.(*AssignTaskRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_GetTasks_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetTasksRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).GetTasks(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_GetTasks_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).GetTasks(ctx, req.(*GetTasksRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HomeLife_ServiceDesc is the grpc.ServiceDesc for HomeLife service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -255,6 +425,26 @@ var HomeLife_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddUserToFamily",
 			Handler:    _HomeLife_AddUserToFamily_Handler,
+		},
+		{
+			MethodName: "AddTask",
+			Handler:    _HomeLife_AddTask_Handler,
+		},
+		{
+			MethodName: "MarkTaskAsDone",
+			Handler:    _HomeLife_MarkTaskAsDone_Handler,
+		},
+		{
+			MethodName: "DeleteTask",
+			Handler:    _HomeLife_DeleteTask_Handler,
+		},
+		{
+			MethodName: "AssignTask",
+			Handler:    _HomeLife_AssignTask_Handler,
+		},
+		{
+			MethodName: "GetTasks",
+			Handler:    _HomeLife_GetTasks_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

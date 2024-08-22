@@ -14,6 +14,7 @@ import (
 const createPermissions = `-- name: CreatePermissions :one
 INSERT INTO "permissions" (
     id,
+    family_id,
     can_read,
     can_edit,
     can_create,
@@ -23,12 +24,14 @@ INSERT INTO "permissions" (
     $2,
     $3,
     $4,
-    $5
-) RETURNING id, can_read, can_edit, can_create, can_modify
+    $5,
+    $6
+) RETURNING id, family_id, can_read, can_edit, can_create, can_modify
 `
 
 type CreatePermissionsParams struct {
 	ID        uuid.UUID `json:"id"`
+	FamilyID  uuid.UUID `json:"family_id"`
 	CanRead   bool      `json:"can_read"`
 	CanEdit   bool      `json:"can_edit"`
 	CanCreate bool      `json:"can_create"`
@@ -38,6 +41,7 @@ type CreatePermissionsParams struct {
 func (q *Queries) CreatePermissions(ctx context.Context, arg CreatePermissionsParams) (Permission, error) {
 	row := q.db.QueryRowContext(ctx, createPermissions,
 		arg.ID,
+		arg.FamilyID,
 		arg.CanRead,
 		arg.CanEdit,
 		arg.CanCreate,
@@ -46,6 +50,7 @@ func (q *Queries) CreatePermissions(ctx context.Context, arg CreatePermissionsPa
 	var i Permission
 	err := row.Scan(
 		&i.ID,
+		&i.FamilyID,
 		&i.CanRead,
 		&i.CanEdit,
 		&i.CanCreate,
@@ -55,7 +60,7 @@ func (q *Queries) CreatePermissions(ctx context.Context, arg CreatePermissionsPa
 }
 
 const getPermissions = `-- name: GetPermissions :one
-SELECT id, can_read, can_edit, can_create, can_modify FROM "permissions"
+SELECT id, family_id, can_read, can_edit, can_create, can_modify FROM "permissions"
 WHERE id = $1 LIMIT 1
 `
 
@@ -64,6 +69,7 @@ func (q *Queries) GetPermissions(ctx context.Context, id uuid.UUID) (Permission,
 	var i Permission
 	err := row.Scan(
 		&i.ID,
+		&i.FamilyID,
 		&i.CanRead,
 		&i.CanEdit,
 		&i.CanCreate,

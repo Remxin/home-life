@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"strings"
 
+	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/token"
+	"github.com/google/uuid"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -46,8 +48,12 @@ func (server *Server) authorizeUser(ctx context.Context) (*token.Payload, error)
 	return payload, nil
 }
 
-// TODO: get permission token from request
-func (server *Server) getPermissions(ctx context.Context) (*token.PermissionPayload, error) {
+type UserPermissions struct {
+	*token.PermissionPayload
+	*db.Permission
+}
+
+func (server *Server) getPermissions(ctx context.Context) (*UserPermissions, error) {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return nil, fmt.Errorf("could not get request from context")
@@ -58,10 +64,25 @@ func (server *Server) getPermissions(ctx context.Context) (*token.PermissionPayl
 		return nil, fmt.Errorf("permission token not found")
 	}
 
-	permissions, err := server.tokenMaker.VerifyPermissionToken(permissionTokenCookie[0])
+	tokenPayload, err := server.tokenMaker.VerifyPermissionToken(permissionTokenCookie[0])
 	if err != nil {
 		return nil, fmt.Errorf("permission token is not valid: %w", err)
 	}
-	fmt.Println(permissions.FamilyId)
-	return permissions, nil
+
+	userId, err := uuid.Parse(tokenPayload.UserId)
+	if err != nil {
+		return nil, fmt.Errorf("wrong permission token, failed to parse user_id: %w", err)
+	}
+
+	permissionsRecord, err := server.store.GetPermissions(ctx, userId)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get user permissions: %w", err)
+	}
+
+	userPermissions := &UserPermissions{
+		tokenPayload,
+		&permissionsRecord,
+	}
+
+	return userPermissions, nil
 }
