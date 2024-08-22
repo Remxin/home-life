@@ -18,5 +18,5 @@ message GetTasksRequest {
 }
 
 message GetTasksResponse {
-    repeated Task task = 1;
+    repeated Task tasks = 1;
 }

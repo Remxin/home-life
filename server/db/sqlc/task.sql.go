@@ -118,16 +118,17 @@ func (q *Queries) DeleteTask(ctx context.Context, id uuid.UUID) (Task, error) {
 }
 
 const getTasks = `-- name: GetTasks :many
-SELECT id, name, description, done, family_id, created_by, assigned_to, execution_date, created_at FROM "tasks"
+SELECT id, name, description, done, family_id, created_by, assigned_to, execution_date, created_at 
+FROM "tasks"
 WHERE
     assigned_to = COALESCE($1, assigned_to) AND
-    family_id = COALESCE($2, family_id) AND
+    family_id = $2 AND
     execution_date BETWEEN $3 AND $4
 `
 
 type GetTasksParams struct {
 	AssignedTo uuid.NullUUID `json:"assigned_to"`
-	FamilyID   uuid.NullUUID `json:"family_id"`
+	FamilyID   uuid.UUID     `json:"family_id"`
 	DateFrom   time.Time     `json:"date_from"`
 	DateTo     time.Time     `json:"date_to"`
 }

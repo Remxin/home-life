@@ -36,8 +36,9 @@ WHERE id = @id
 RETURNING *;
 
 -- name: GetTasks :many
-SELECT * FROM "tasks"
+SELECT * 
+FROM "tasks"
 WHERE
     assigned_to = COALESCE(sqlc.narg(assigned_to), assigned_to) AND
-    family_id = COALESCE(sqlc.narg(family_id), family_id) AND
-    execution_date BETWEEN @date_from AND @date_to;
+    family_id = sqlc.arg(family_id) AND
+    execution_date BETWEEN sqlc.arg(date_from) AND sqlc.arg(date_to);
