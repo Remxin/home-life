@@ -60,3 +60,16 @@ func convertTask(task db.Task) *pb.Task {
 		CreatedAt:     timestamppb.New(task.CreatedAt),
 	}
 }
+
+func convertRecipe(recipe db.Recipe) *pb.Recipe {
+	return &pb.Recipe{
+		Id:          recipe.ID.String(),
+		Title:       recipe.Title,
+		Description: recipe.Description,
+		Public:      recipe.Public,
+		CreatedBy:   recipe.CreatedBy.String(),
+		IframeLink:  recipe.IframeLink,
+		ImageLink:   recipe.ImageLink,
+		CreatedAt:   timestamppb.New(recipe.CreatedAt),
+	}
+}

@@ -32,7 +32,9 @@ type Recipe struct {
 	Public      bool      `json:"public"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
+	IframeLink  string    `json:"iframe_link"`
 	ImageLink   string    `json:"image_link"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type Session struct {

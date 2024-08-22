@@ -1,86 +1,69 @@
--- SQL dump generated using DBML (dbml.dbdiagram.io)
--- Database: PostgreSQL
--- Generated at: 2024-07-29T21:53:26.968Z
+Table users as U {
+  id uuid [pk]
+  full_name varchar [not null]
+  email varchar [not null, unique]
+  hashed_password varchar [not null]
+  is_verified boolean [not null, default: false]
+  password_changed_at timestamptz [not null, default: '0001-01-01 00:00:00Z']
+  created_at timestamptz [not null, default: `now()`]
+}
 
-CREATE TABLE "users" (
-  "id" uuid PRIMARY KEY,
-  "name" varchar NOT NULL,
-  "email" varchar UNIQUE NOT NULL,
-  "password" varchar NOT NULL,
-  "is_verified" boolean NOT NULL DEFAULT false,
-  "family" uuid DEFAULT null,
-  "password_changed_at" timestamptz NOT NULL DEFAULT '0001-01-01 00:00:00Z',
-  "created_at" timestamptz NOT NULL DEFAULT (now())
-);
+Table families as F {
+  id uuid [pk]
+  name varchar [not null]
+  owner_id uuid [ref: > U.id, not null, unique]
+  created_at timestamptz [not null, default: `now()`]
+}
 
-CREATE TABLE "families" (
-  "id" uuid PRIMARY KEY,
-  "name" varchar NOT NULL,
-  "owner" uuid NOT NULL
-);
+Table permissions as P {
+  id uuid [pk, ref: > U.id]
+  family_id uuid [ref: > F.id, not null]
+  can_read boolean [not null, default: true]
+  can_edit boolean [not null, default: true]
+  can_create boolean [not null, default: false]
+  can_modify boolean [not null, default: false]
+}
 
-CREATE TABLE "permissions" (
-  "id" uuid PRIMARY KEY,
-  "can_read" boolean NOT NULL DEFAULT true,
-  "can_edit" boolean NOT NULL DEFAULT false,
-  "can_create" boolean NOT NULL DEFAULT true
-);
+Table tasks as T {
+  id uuid [pk]
+  name varchar [not null]
+  description varchar [not null, default: ""]
+  done boolean [not null, default: false]
+  family_id uuid [ref: > F.id, not null]
+  created_by uuid [ref: > U.id, not null]
+  assigned_to uuid [ref: > U.id, default: null]
+  execution_date timestamptz [not null]
+  created_at timestamptz [not null, default: `now()`]
+}
 
-CREATE TABLE "tasks" (
-  "id" uuid PRIMARY KEY,
-  "name" varchar NOT NULL,
-  "description" varchar NOT NULL DEFAULT '',
-  "family" uuid NOT NULL,
-  "created_by" uuid NOT NULL,
-  "assigned_to" uuid DEFAULT null,
-  "date" timestamptz NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (now())
-);
+Table recipes {
+  id uuid [pk]
+  created_by uuid [not null, ref: > U.id]
+  public boolean [not null, default: false]
+  title varchar [not null]
+  description varchar [not null]
+  iframe_link varchar [not null, default: ""]
+  image_link varchar [not null, default: ""]
+  created_at timestamptz [not null, default: `now()`]
+}
 
-CREATE TABLE "recipes" (
-  "id" uuid PRIMARY KEY,
-  "created_by" uuid NOT NULL,
-  "public" boolean NOT NULL DEFAULT false,
-  "title" varchar NOT NULL,
-  "description" varchar NOT NULL,
-  "image_link" varchar NOT NULL DEFAULT ''
-);
+Table sessions {
+  id uuid [pk]
+  user_id uuid [ref: > U.id, not null]
+  refresh_token varchar [not null]
+  user_agent varchar [not null]
+  client_ip varchar [not null]
+  is_blocked boolean [not null, default: false]
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null, default: `now()`]
+}
 
-CREATE TABLE "sessions" (
-  "id" uuid PRIMARY KEY,
-  "user_id" uuid NOT NULL,
-  "refresh_token" varchar NOT NULL,
-  "user_agent" varchar NOT NULL,
-  "client_ip" varchar NOT NULL,
-  "is_blocked" boolean NOT NULL DEFAULT false,
-  "expires_at" timestamptz NOT NULL,
-  "created_at" timestamptz NOT NULL DEFAULT (now())
-);
-
-CREATE TABLE "verify_emails" (
-  "id" uuid PRIMARY KEY,
-  "user_id" uuid NOT NULL,
-  "email" varchar NOT NULL,
-  "secret_code" varchar NOT NULL,
-  "is_used" boolean NOT NULL DEFAULT false,
-  "created_at" timestamptz NOT NULL DEFAULT (now()),
-  "expired_at" timestamptz NOT NULL
-);
-
-ALTER TABLE "users" ADD FOREIGN KEY ("family") REFERENCES "families" ("id");
-
-ALTER TABLE "families" ADD FOREIGN KEY ("owner") REFERENCES "users" ("id");
-
-ALTER TABLE "permissions" ADD FOREIGN KEY ("id") REFERENCES "users" ("id");
-
-ALTER TABLE "tasks" ADD FOREIGN KEY ("family") REFERENCES "families" ("id");
-
-ALTER TABLE "tasks" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "tasks" ADD FOREIGN KEY ("assigned_to") REFERENCES "users" ("id");
-
-ALTER TABLE "recipes" ADD FOREIGN KEY ("created_by") REFERENCES "users" ("id");
-
-ALTER TABLE "sessions" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
-
-ALTER TABLE "verify_emails" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+Table verify_emails {
+  id uuid [pk]
+  user_id uuid [ref: > U.id, not null]
+  email varchar [not null]
+  secret_code varchar [not null]
+  is_used boolean [not null, default: false]
+  created_at timestamptz [not null, default: `now()`]
+  expired_at timestamptz [not null]
+}

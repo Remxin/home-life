@@ -15,6 +15,7 @@ type Querier interface {
 	AssignTask(ctx context.Context, arg AssignTaskParams) (Task, error)
 	CreateFamily(ctx context.Context, arg CreateFamilyParams) (Family, error)
 	CreatePermissions(ctx context.Context, arg CreatePermissionsParams) (Permission, error)
+	CreateRecipe(ctx context.Context, arg CreateRecipeParams) (Recipe, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmail, error)

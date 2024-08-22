@@ -157,10 +157,44 @@
         ]
       }
     },
+    "/v1/recipe": {
+      "post": {
+        "summary": "Create Recipe",
+        "description": "Use this API to create a recipe",
+        "operationId": "HomeLife_CreateRecipe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateRecipeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateRecipeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
     "/v1/task": {
       "get": {
-        "summary": "Assign task",
-        "description": "Use this API to assign a task to a family member",
+        "summary": "Get tasks",
+        "description": "Use this API to get tasks",
         "operationId": "HomeLife_GetTasks",
         "responses": {
           "200": {
@@ -470,6 +504,34 @@
         }
       }
     },
+    "pbCreateRecipeRequest": {
+      "type": "object",
+      "properties": {
+        "public": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iframeLink": {
+          "type": "string"
+        },
+        "imageLink": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCreateRecipeResponse": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "$ref": "#/definitions/pbRecipe"
+        }
+      }
+    },
     "pbCreateUserRequest": {
       "type": "object",
       "properties": {
@@ -605,6 +667,36 @@
         },
         "canModify": {
           "type": "boolean"
+        }
+      }
+    },
+    "pbRecipe": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "public": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iframeLink": {
+          "type": "string"
+        },
+        "imageLink": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
         }
       }
     },
