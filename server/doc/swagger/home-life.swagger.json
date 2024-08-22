@@ -524,7 +524,7 @@
     "pbGetTasksResponse": {
       "type": "object",
       "properties": {
-        "task": {
+        "tasks": {
           "type": "array",
           "items": {
             "type": "object",
