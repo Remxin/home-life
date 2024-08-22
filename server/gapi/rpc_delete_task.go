@@ -3,7 +3,6 @@ package gapi
 import (
 	"context"
 
-	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/pb"
 	val "github.com/Remxin/home-life/server/validations"
 	"github.com/google/uuid"
@@ -12,8 +11,8 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func (server *Server) AssignTask(ctx context.Context, req *pb.AssignTaskRequest) (*pb.AssignTaskResponse, error) {
-	violations := validateAssignTaskRequest(req)
+func (server *Server) DeleteTask(ctx context.Context, req *pb.DeleteTaskRequest) (*pb.DeleteTaskResponse, error) {
+	violations := validateDeleteTask(req)
 	if violations != nil {
 		return nil, invalidArgumentError(violations)
 	}
@@ -31,8 +30,8 @@ func (server *Server) AssignTask(ctx context.Context, req *pb.AssignTaskRequest)
 		return nil, status.Errorf(codes.Unauthenticated, "wrong user permissions token")
 	}
 
-	if !userPermissions.CanEdit {
-		return nil, status.Error(codes.PermissionDenied, "cannot assign task: need edit permissions")
+	if !userPermissions.CanCreate {
+		return nil, status.Error(codes.PermissionDenied, "cannot delete task: need create permissions")
 	}
 
 	taskID, err := uuid.Parse(req.TaskId)
@@ -40,36 +39,22 @@ func (server *Server) AssignTask(ctx context.Context, req *pb.AssignTaskRequest)
 		return nil, status.Errorf(codes.InvalidArgument, "cannot conver task_id to UUID")
 	}
 
-	assigneeID, err := uuid.Parse(req.AssigneeId)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "cannot conver assignee_id to UUID")
-	}
-	task, err := server.store.AssignTask(ctx, db.AssignTaskParams{
-		ID: taskID,
-		AssignedTo: uuid.NullUUID{
-			UUID:  assigneeID,
-			Valid: true,
-		},
-	})
+	task, err := server.store.DeleteTask(ctx, taskID)
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to assign a task: %s", err)
+		return nil, status.Errorf(codes.Internal, "failed to delete a task: %s", err)
 	}
 
-	res := &pb.AssignTaskResponse{
+	res := &pb.DeleteTaskResponse{
 		Task: convertTask(task),
 	}
 
 	return res, nil
 }
 
-func validateAssignTaskRequest(req *pb.AssignTaskRequest) (violations []*errdetails.BadRequest_FieldViolation) {
+func validateDeleteTask(req *pb.DeleteTaskRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	if err := val.ValidateUUID(req.TaskId); err != nil {
 		violations = append(violations, fieldViolation("task_id", err))
-	}
-
-	if err := val.ValidateUUID(req.AssigneeId); err != nil {
-		violations = append(violations, fieldViolation("assignee_id", err))
 	}
 
 	return violations

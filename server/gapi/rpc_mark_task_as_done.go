@@ -31,7 +31,7 @@ func (server *Server) MarkTaskAsDone(ctx context.Context, req *pb.MarkTaskAsDone
 	}
 
 	if !userPermissions.CanEdit {
-		return nil, status.Error(codes.PermissionDenied, "cannot add a task: need create permissions")
+		return nil, status.Error(codes.PermissionDenied, "cannot mark task as done: need edit permissions")
 	}
 
 	taskID, err := uuid.Parse(req.TaskId)
@@ -42,7 +42,7 @@ func (server *Server) MarkTaskAsDone(ctx context.Context, req *pb.MarkTaskAsDone
 	task, err := server.store.MarkTaskAsDone(ctx, taskID)
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, "failed to add new task: %s", err)
+		return nil, status.Errorf(codes.Internal, "failed to mark task as done task: %s", err)
 	}
 
 	res := &pb.MarkTaskAsDoneResponse{
