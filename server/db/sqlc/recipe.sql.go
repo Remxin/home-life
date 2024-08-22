@@ -7,6 +7,7 @@ package db
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/google/uuid"
 )
@@ -48,6 +49,54 @@ func (q *Queries) CreateRecipe(ctx context.Context, arg CreateRecipeParams) (Rec
 		arg.Description,
 		arg.IframeLink,
 		arg.ImageLink,
+	)
+	var i Recipe
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedBy,
+		&i.Public,
+		&i.Title,
+		&i.Description,
+		&i.IframeLink,
+		&i.ImageLink,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const updateRecipe = `-- name: UpdateRecipe :one
+UPDATE "recipes"
+SET
+  title = COALESCE($1, title),
+  public = COALESCE($2, public),
+  description = COALESCE($3, description),
+  iframe_link = COALESCE($4, iframe_link),
+  image_link = COALESCE($5, image_link)
+WHERE
+  id = $6 AND
+  created_by = $7
+RETURNING id, created_by, public, title, description, iframe_link, image_link, created_at
+`
+
+type UpdateRecipeParams struct {
+	Title       sql.NullString `json:"title"`
+	Public      sql.NullBool   `json:"public"`
+	Description sql.NullString `json:"description"`
+	IframeLink  sql.NullString `json:"iframe_link"`
+	ImageLink   sql.NullString `json:"image_link"`
+	ID          uuid.UUID      `json:"id"`
+	CreatedBy   uuid.UUID      `json:"created_by"`
+}
+
+func (q *Queries) UpdateRecipe(ctx context.Context, arg UpdateRecipeParams) (Recipe, error) {
+	row := q.db.QueryRowContext(ctx, updateRecipe,
+		arg.Title,
+		arg.Public,
+		arg.Description,
+		arg.IframeLink,
+		arg.ImageLink,
+		arg.ID,
+		arg.CreatedBy,
 	)
 	var i Recipe
 	err := row.Scan(

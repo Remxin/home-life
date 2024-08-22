@@ -189,6 +189,38 @@
         "tags": [
           "HomeLife"
         ]
+      },
+      "patch": {
+        "summary": "Update Recipe",
+        "description": "Use this API to update recipe",
+        "operationId": "HomeLife_UpdateRecipe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbUpdateRecipeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbUpdateRecipeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
       }
     },
     "/v1/task": {
@@ -739,6 +771,37 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbUpdateRecipeRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "public": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iframeLink": {
+          "type": "string"
+        },
+        "imageLink": {
+          "type": "string"
+        }
+      }
+    },
+    "pbUpdateRecipeResponse": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "$ref": "#/definitions/pbRecipe"
         }
       }
     },
