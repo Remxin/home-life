@@ -3,6 +3,7 @@ package gapi
 import (
 	"context"
 
+	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/pb"
 	val "github.com/Remxin/home-life/server/validations"
 	"github.com/google/uuid"
@@ -30,8 +31,8 @@ func (server *Server) DeleteTask(ctx context.Context, req *pb.DeleteTaskRequest)
 		return nil, status.Errorf(codes.Unauthenticated, "wrong user permissions token")
 	}
 
-	if !userPermissions.CanCreate {
-		return nil, status.Error(codes.PermissionDenied, "cannot delete task: need create permissions")
+	if !userPermissions.CanEdit {
+		return nil, status.Error(codes.PermissionDenied, "cannot delete task: need edit permissions")
 	}
 
 	taskID, err := uuid.Parse(req.TaskId)
@@ -39,7 +40,10 @@ func (server *Server) DeleteTask(ctx context.Context, req *pb.DeleteTaskRequest)
 		return nil, status.Errorf(codes.InvalidArgument, "cannot conver task_id to UUID")
 	}
 
-	task, err := server.store.DeleteTask(ctx, taskID)
+	task, err := server.store.DeleteTask(ctx, db.DeleteTaskParams{
+		ID:       taskID,
+		FamilyID: userPermissions.FamilyID,
+	})
 
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to delete a task: %s", err)

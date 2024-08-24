@@ -3,6 +3,7 @@ package gapi
 import (
 	"context"
 
+	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/pb"
 	val "github.com/Remxin/home-life/server/validations"
 	"github.com/google/uuid"
@@ -39,7 +40,10 @@ func (server *Server) MarkTaskAsDone(ctx context.Context, req *pb.MarkTaskAsDone
 		return nil, status.Errorf(codes.InvalidArgument, "cannot conver task_id to UUID")
 	}
 
-	task, err := server.store.MarkTaskAsDone(ctx, taskID)
+	task, err := server.store.MarkTaskAsDone(ctx, db.MarkTaskAsDoneParams{
+		ID:       taskID,
+		FamilyID: userPermissions.FamilyID,
+	})
 
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to mark task as done task: %s", err)
