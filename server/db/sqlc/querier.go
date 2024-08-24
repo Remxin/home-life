@@ -22,6 +22,7 @@ type Querier interface {
 	DeleteTask(ctx context.Context, id uuid.UUID) (Task, error)
 	GetMembers(ctx context.Context, familyID uuid.UUID) ([]GetMembersRow, error)
 	GetPermissions(ctx context.Context, id uuid.UUID) (Permission, error)
+	GetRecipes(ctx context.Context, arg GetRecipesParams) ([]Recipe, error)
 	GetSession(ctx context.Context, id uuid.UUID) (Session, error)
 	GetTasks(ctx context.Context, arg GetTasksParams) ([]Task, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)

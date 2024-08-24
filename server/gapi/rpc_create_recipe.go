@@ -49,7 +49,7 @@ func validateCreateRecipeRequest(req *pb.CreateRecipeRequest) (violations []*err
 	if err := val.ValidateString(req.Description, 0, 250); err != nil {
 		violations = append(violations, fieldViolation("description", err))
 	}
-	if err := val.ValidateString(req.Title, 0, 80); err != nil {
+	if err := val.ValidateString(req.Title, 2, 80); err != nil {
 		violations = append(violations, fieldViolation("title", err))
 	}
 

@@ -29,4 +29,20 @@ WHERE
   id = sqlc.arg(id) AND
   created_by = sqlc.arg(created_by)
 RETURNING *;
+
+-- name: GetRecipes :many
+SELECT r.*
+FROM "recipes" r
+INNER JOIN "users" u 
+  ON r.created_by = u.id
+LEFT JOIN "permissions" p 
+  ON u.id = p.id
+WHERE 
+  p.family_id = COALESCE(sqlc.narg(family_id), family_id) AND
+  public = COALESCE(sqlc.narg(public), public) AND 
+  (
+    sqlc.narg(title)::text IS NULL OR r.title ILIKE '%' || sqlc.narg(title)::text || '%'
+  );
+
+
   

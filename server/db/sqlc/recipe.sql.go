@@ -64,6 +64,59 @@ func (q *Queries) CreateRecipe(ctx context.Context, arg CreateRecipeParams) (Rec
 	return i, err
 }
 
+const getRecipes = `-- name: GetRecipes :many
+SELECT r.id, r.created_by, r.public, r.title, r.description, r.iframe_link, r.image_link, r.created_at
+FROM "recipes" r
+INNER JOIN "users" u 
+  ON r.created_by = u.id
+LEFT JOIN "permissions" p 
+  ON u.id = p.id
+WHERE 
+  p.family_id = COALESCE($1, family_id) AND
+  public = COALESCE($2, public) AND 
+  (
+    $3::text IS NULL OR r.title ILIKE '%' || $3::text || '%'
+  )
+`
+
+type GetRecipesParams struct {
+	FamilyID uuid.NullUUID  `json:"family_id"`
+	Public   sql.NullBool   `json:"public"`
+	Title    sql.NullString `json:"title"`
+}
+
+func (q *Queries) GetRecipes(ctx context.Context, arg GetRecipesParams) ([]Recipe, error) {
+	rows, err := q.db.QueryContext(ctx, getRecipes, arg.FamilyID, arg.Public, arg.Title)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Recipe{}
+	for rows.Next() {
+		var i Recipe
+		if err := rows.Scan(
+			&i.ID,
+			&i.CreatedBy,
+			&i.Public,
+			&i.Title,
+			&i.Description,
+			&i.IframeLink,
+			&i.ImageLink,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateRecipe = `-- name: UpdateRecipe :one
 UPDATE "recipes"
 SET

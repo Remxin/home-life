@@ -158,6 +158,48 @@
       }
     },
     "/v1/recipe": {
+      "get": {
+        "summary": "Get Recipes",
+        "description": "Use this API to get recipes",
+        "operationId": "HomeLife_GetRecipes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetRecipesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "PRIVATE",
+              "FAMILY"
+            ],
+            "default": "PUBLIC"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      },
       "post": {
         "summary": "Create Recipe",
         "description": "Use this API to create a recipe",
@@ -615,6 +657,18 @@
         }
       }
     },
+    "pbGetRecipesResponse": {
+      "type": "object",
+      "properties": {
+        "recipes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbRecipe"
+          }
+        }
+      }
+    },
     "pbGetTasksResponse": {
       "type": "object",
       "properties": {
@@ -731,6 +785,15 @@
           "format": "date-time"
         }
       }
+    },
+    "pbSearch": {
+      "type": "string",
+      "enum": [
+        "PUBLIC",
+        "PRIVATE",
+        "FAMILY"
+      ],
+      "default": "PUBLIC"
     },
     "pbSearchBy": {
       "type": "string",
