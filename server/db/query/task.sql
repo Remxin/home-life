@@ -21,18 +21,24 @@ INSERT INTO "tasks" (
 -- name: MarkTaskAsDone :one
 UPDATE "tasks"
 SET done = true
-WHERE id = @id
+WHERE 
+    id = @id AND
+    family_id = @family_id
 RETURNING *;
 
 -- name: DeleteTask :one
 DELETE FROM "tasks"
-WHERE id = @id
+WHERE 
+    id = @id AND
+    family_id = @family_id
 RETURNING *;
 
 -- name: AssignTask :one
 UPDATE "tasks"
 SET assigned_to = @assigned_to
-WHERE id = @id
+WHERE 
+    id = @id AND
+    family_id = @family_id
 RETURNING *;
 
 -- name: GetTasks :many

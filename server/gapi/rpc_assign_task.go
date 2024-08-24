@@ -50,6 +50,7 @@ func (server *Server) AssignTask(ctx context.Context, req *pb.AssignTaskRequest)
 			UUID:  assigneeID,
 			Valid: true,
 		},
+		FamilyID: userPermissions.FamilyID,
 	})
 
 	if err != nil {
