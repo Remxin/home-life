@@ -16,6 +16,7 @@ import "rpc_get_tasks.proto";
 import "rpc_create_recipe.proto";
 import "rpc_update_recipe.proto";
 import "rpc_get_recipes.proto";
+import "rpc_delete_recipe.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/Remxin/home-life/server/pb";
@@ -171,6 +172,16 @@ service HomeLife {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Use this API to get recipes";
             summary: "Get Recipes"
+        };
+    }
+
+    rpc DeleteRecipe (DeleteRecipeRequest) returns (DeleteRecipeResponse) {
+        option (google.api.http) = {
+            delete: "/v1/recipe"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to delete a recipe";
+            summary: "Delete Recipe"
         };
     }
 }

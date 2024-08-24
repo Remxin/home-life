@@ -64,6 +64,35 @@ func (q *Queries) CreateRecipe(ctx context.Context, arg CreateRecipeParams) (Rec
 	return i, err
 }
 
+const deleteRecipe = `-- name: DeleteRecipe :one
+DELETE FROM "recipes"
+WHERE
+  id = $1 AND
+  created_by = $2
+RETURNING id, created_by, public, title, description, iframe_link, image_link, created_at
+`
+
+type DeleteRecipeParams struct {
+	ID        uuid.UUID `json:"id"`
+	CreatedBy uuid.UUID `json:"created_by"`
+}
+
+func (q *Queries) DeleteRecipe(ctx context.Context, arg DeleteRecipeParams) (Recipe, error) {
+	row := q.db.QueryRowContext(ctx, deleteRecipe, arg.ID, arg.CreatedBy)
+	var i Recipe
+	err := row.Scan(
+		&i.ID,
+		&i.CreatedBy,
+		&i.Public,
+		&i.Title,
+		&i.Description,
+		&i.IframeLink,
+		&i.ImageLink,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getRecipes = `-- name: GetRecipes :many
 SELECT r.id, r.created_by, r.public, r.title, r.description, r.iframe_link, r.image_link, r.created_at
 FROM "recipes" r

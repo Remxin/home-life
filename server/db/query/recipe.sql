@@ -17,6 +17,14 @@ INSERT INTO "recipes" (
     @image_link
 ) RETURNING *;
 
+-- name: DeleteRecipe :one
+DELETE FROM "recipes"
+WHERE
+  id = @id AND
+  created_by = @created_by
+RETURNING *;
+
+
 -- name: UpdateRecipe :one
 UPDATE "recipes"
 SET

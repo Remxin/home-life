@@ -1,0 +1,14 @@
+syntax = "proto3";
+package pb;
+
+import "recipe.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message DeleteRecipeRequest {
+    string id = 1;
+}
+
+message DeleteRecipeResponse {
+    Recipe recipe = 1;
+}

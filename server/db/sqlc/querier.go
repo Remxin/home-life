@@ -19,6 +19,7 @@ type Querier interface {
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmail, error)
+	DeleteRecipe(ctx context.Context, arg DeleteRecipeParams) (Recipe, error)
 	DeleteTask(ctx context.Context, id uuid.UUID) (Task, error)
 	GetMembers(ctx context.Context, familyID uuid.UUID) ([]GetMembersRow, error)
 	GetPermissions(ctx context.Context, id uuid.UUID) (Permission, error)
