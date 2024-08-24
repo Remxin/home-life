@@ -157,10 +157,148 @@
         ]
       }
     },
+    "/v1/recipe": {
+      "get": {
+        "summary": "Get Recipes",
+        "description": "Use this API to get recipes",
+        "operationId": "HomeLife_GetRecipes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetRecipesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PUBLIC",
+              "PRIVATE",
+              "FAMILY"
+            ],
+            "default": "PUBLIC"
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      },
+      "delete": {
+        "summary": "Delete Recipe",
+        "description": "Use this API to delete a recipe",
+        "operationId": "HomeLife_DeleteRecipe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbDeleteRecipeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      },
+      "post": {
+        "summary": "Create Recipe",
+        "description": "Use this API to create a recipe",
+        "operationId": "HomeLife_CreateRecipe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbCreateRecipeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbCreateRecipeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      },
+      "patch": {
+        "summary": "Update Recipe",
+        "description": "Use this API to update recipe",
+        "operationId": "HomeLife_UpdateRecipe",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbUpdateRecipeResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/pbUpdateRecipeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
     "/v1/task": {
       "get": {
-        "summary": "Assign task",
-        "description": "Use this API to assign a task to a family member",
+        "summary": "Get tasks",
+        "description": "Use this API to get tasks",
         "operationId": "HomeLife_GetTasks",
         "responses": {
           "200": {
@@ -470,6 +608,34 @@
         }
       }
     },
+    "pbCreateRecipeRequest": {
+      "type": "object",
+      "properties": {
+        "public": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iframeLink": {
+          "type": "string"
+        },
+        "imageLink": {
+          "type": "string"
+        }
+      }
+    },
+    "pbCreateRecipeResponse": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "$ref": "#/definitions/pbRecipe"
+        }
+      }
+    },
     "pbCreateUserRequest": {
       "type": "object",
       "properties": {
@@ -492,6 +658,14 @@
       "properties": {
         "user": {
           "$ref": "#/definitions/pbUser"
+        }
+      }
+    },
+    "pbDeleteRecipeResponse": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "$ref": "#/definitions/pbRecipe"
         }
       }
     },
@@ -518,6 +692,18 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbGetRecipesResponse": {
+      "type": "object",
+      "properties": {
+        "recipes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbRecipe"
+          }
         }
       }
     },
@@ -608,6 +794,45 @@
         }
       }
     },
+    "pbRecipe": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "createdBy": {
+          "type": "string"
+        },
+        "public": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iframeLink": {
+          "type": "string"
+        },
+        "imageLink": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "pbSearch": {
+      "type": "string",
+      "enum": [
+        "PUBLIC",
+        "PRIVATE",
+        "FAMILY"
+      ],
+      "default": "PUBLIC"
+    },
     "pbSearchBy": {
       "type": "string",
       "enum": [
@@ -647,6 +872,37 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbUpdateRecipeRequest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "public": {
+          "type": "boolean"
+        },
+        "title": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "iframeLink": {
+          "type": "string"
+        },
+        "imageLink": {
+          "type": "string"
+        }
+      }
+    },
+    "pbUpdateRecipeResponse": {
+      "type": "object",
+      "properties": {
+        "recipe": {
+          "$ref": "#/definitions/pbRecipe"
         }
       }
     },

@@ -1,0 +1,21 @@
+syntax = "proto3";
+package pb;
+
+import "recipe.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+enum Search {
+    PUBLIC = 0;
+    PRIVATE = 1;
+    FAMILY = 2;
+}
+
+message GetRecipesRequest {
+    Search search = 1;
+    optional string title = 2;
+}
+
+message GetRecipesResponse {
+    repeated Recipe recipes = 1;
+}

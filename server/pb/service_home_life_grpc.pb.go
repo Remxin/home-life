@@ -29,6 +29,10 @@ const (
 	HomeLife_DeleteTask_FullMethodName      = "/pb.HomeLife/DeleteTask"
 	HomeLife_AssignTask_FullMethodName      = "/pb.HomeLife/AssignTask"
 	HomeLife_GetTasks_FullMethodName        = "/pb.HomeLife/GetTasks"
+	HomeLife_CreateRecipe_FullMethodName    = "/pb.HomeLife/CreateRecipe"
+	HomeLife_UpdateRecipe_FullMethodName    = "/pb.HomeLife/UpdateRecipe"
+	HomeLife_GetRecipes_FullMethodName      = "/pb.HomeLife/GetRecipes"
+	HomeLife_DeleteRecipe_FullMethodName    = "/pb.HomeLife/DeleteRecipe"
 )
 
 // HomeLifeClient is the client API for HomeLife service.
@@ -45,6 +49,10 @@ type HomeLifeClient interface {
 	DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*DeleteTaskResponse, error)
 	AssignTask(ctx context.Context, in *AssignTaskRequest, opts ...grpc.CallOption) (*AssignTaskResponse, error)
 	GetTasks(ctx context.Context, in *GetTasksRequest, opts ...grpc.CallOption) (*GetTasksResponse, error)
+	CreateRecipe(ctx context.Context, in *CreateRecipeRequest, opts ...grpc.CallOption) (*CreateRecipeResponse, error)
+	UpdateRecipe(ctx context.Context, in *UpdateRecipeRequest, opts ...grpc.CallOption) (*UpdateRecipeResponse, error)
+	GetRecipes(ctx context.Context, in *GetRecipesRequest, opts ...grpc.CallOption) (*GetRecipesResponse, error)
+	DeleteRecipe(ctx context.Context, in *DeleteRecipeRequest, opts ...grpc.CallOption) (*DeleteRecipeResponse, error)
 }
 
 type homeLifeClient struct {
@@ -155,6 +163,46 @@ func (c *homeLifeClient) GetTasks(ctx context.Context, in *GetTasksRequest, opts
 	return out, nil
 }
 
+func (c *homeLifeClient) CreateRecipe(ctx context.Context, in *CreateRecipeRequest, opts ...grpc.CallOption) (*CreateRecipeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateRecipeResponse)
+	err := c.cc.Invoke(ctx, HomeLife_CreateRecipe_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) UpdateRecipe(ctx context.Context, in *UpdateRecipeRequest, opts ...grpc.CallOption) (*UpdateRecipeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateRecipeResponse)
+	err := c.cc.Invoke(ctx, HomeLife_UpdateRecipe_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) GetRecipes(ctx context.Context, in *GetRecipesRequest, opts ...grpc.CallOption) (*GetRecipesResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRecipesResponse)
+	err := c.cc.Invoke(ctx, HomeLife_GetRecipes_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) DeleteRecipe(ctx context.Context, in *DeleteRecipeRequest, opts ...grpc.CallOption) (*DeleteRecipeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteRecipeResponse)
+	err := c.cc.Invoke(ctx, HomeLife_DeleteRecipe_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HomeLifeServer is the server API for HomeLife service.
 // All implementations must embed UnimplementedHomeLifeServer
 // for forward compatibility
@@ -169,6 +217,10 @@ type HomeLifeServer interface {
 	DeleteTask(context.Context, *DeleteTaskRequest) (*DeleteTaskResponse, error)
 	AssignTask(context.Context, *AssignTaskRequest) (*AssignTaskResponse, error)
 	GetTasks(context.Context, *GetTasksRequest) (*GetTasksResponse, error)
+	CreateRecipe(context.Context, *CreateRecipeRequest) (*CreateRecipeResponse, error)
+	UpdateRecipe(context.Context, *UpdateRecipeRequest) (*UpdateRecipeResponse, error)
+	GetRecipes(context.Context, *GetRecipesRequest) (*GetRecipesResponse, error)
+	DeleteRecipe(context.Context, *DeleteRecipeRequest) (*DeleteRecipeResponse, error)
 	mustEmbedUnimplementedHomeLifeServer()
 }
 
@@ -205,6 +257,18 @@ func (UnimplementedHomeLifeServer) AssignTask(context.Context, *AssignTaskReques
 }
 func (UnimplementedHomeLifeServer) GetTasks(context.Context, *GetTasksRequest) (*GetTasksResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetTasks not implemented")
+}
+func (UnimplementedHomeLifeServer) CreateRecipe(context.Context, *CreateRecipeRequest) (*CreateRecipeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRecipe not implemented")
+}
+func (UnimplementedHomeLifeServer) UpdateRecipe(context.Context, *UpdateRecipeRequest) (*UpdateRecipeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRecipe not implemented")
+}
+func (UnimplementedHomeLifeServer) GetRecipes(context.Context, *GetRecipesRequest) (*GetRecipesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRecipes not implemented")
+}
+func (UnimplementedHomeLifeServer) DeleteRecipe(context.Context, *DeleteRecipeRequest) (*DeleteRecipeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRecipe not implemented")
 }
 func (UnimplementedHomeLifeServer) mustEmbedUnimplementedHomeLifeServer() {}
 
@@ -399,6 +463,78 @@ func _HomeLife_GetTasks_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HomeLife_CreateRecipe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRecipeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).CreateRecipe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_CreateRecipe_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).CreateRecipe(ctx, req.(*CreateRecipeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_UpdateRecipe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRecipeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).UpdateRecipe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_UpdateRecipe_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).UpdateRecipe(ctx, req.(*UpdateRecipeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_GetRecipes_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRecipesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).GetRecipes(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_GetRecipes_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).GetRecipes(ctx, req.(*GetRecipesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_DeleteRecipe_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRecipeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).DeleteRecipe(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_DeleteRecipe_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).DeleteRecipe(ctx, req.(*DeleteRecipeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HomeLife_ServiceDesc is the grpc.ServiceDesc for HomeLife service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -445,6 +581,22 @@ var HomeLife_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetTasks",
 			Handler:    _HomeLife_GetTasks_Handler,
+		},
+		{
+			MethodName: "CreateRecipe",
+			Handler:    _HomeLife_CreateRecipe_Handler,
+		},
+		{
+			MethodName: "UpdateRecipe",
+			Handler:    _HomeLife_UpdateRecipe_Handler,
+		},
+		{
+			MethodName: "GetRecipes",
+			Handler:    _HomeLife_GetRecipes_Handler,
+		},
+		{
+			MethodName: "DeleteRecipe",
+			Handler:    _HomeLife_DeleteRecipe_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

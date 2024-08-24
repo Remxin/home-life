@@ -1,0 +1,18 @@
+syntax = "proto3";
+package pb;
+
+import "recipe.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message CreateRecipeRequest {
+    bool public = 1;
+    string title = 2;
+    string description = 3;
+    string iframe_link = 4;
+    string image_link = 5;
+}
+
+message CreateRecipeResponse {
+    Recipe recipe = 1;
+}

@@ -13,6 +13,10 @@ import "rpc_assign_task.proto";
 import "rpc_mark_task_as_done.proto";
 import "rpc_delete_task.proto";
 import "rpc_get_tasks.proto";
+import "rpc_create_recipe.proto";
+import "rpc_update_recipe.proto";
+import "rpc_get_recipes.proto";
+import "rpc_delete_recipe.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 option go_package = "github.com/Remxin/home-life/server/pb";
@@ -134,9 +138,50 @@ service HomeLife {
             get: "/v1/task"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            description: "Use this API to assign a task to a family member";
-            summary: "Assign task"
+            description: "Use this API to get tasks";
+            summary: "Get tasks"
         };
     }
 
+    rpc CreateRecipe (CreateRecipeRequest) returns (CreateRecipeResponse) {
+        option (google.api.http) = {
+            post: "/v1/recipe"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to create a recipe";
+            summary: "Create Recipe"
+        };
+    }
+
+    rpc UpdateRecipe (UpdateRecipeRequest) returns (UpdateRecipeResponse) {
+        option (google.api.http) = {
+            patch: "/v1/recipe"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to update recipe";
+            summary: "Update Recipe"
+        };
+    }
+
+    rpc GetRecipes (GetRecipesRequest) returns (GetRecipesResponse) {
+        option (google.api.http) = {
+            get: "/v1/recipe"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to get recipes";
+            summary: "Get Recipes"
+        };
+    }
+
+    rpc DeleteRecipe (DeleteRecipeRequest) returns (DeleteRecipeResponse) {
+        option (google.api.http) = {
+            delete: "/v1/recipe"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to delete a recipe";
+            summary: "Delete Recipe"
+        };
+    }
 }

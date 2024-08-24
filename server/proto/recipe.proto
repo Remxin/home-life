@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package pb;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+
+message Recipe {
+    string id = 1;
+    string created_by = 2;
+    bool public = 3;
+    string title = 4;
+    string description = 5;
+    string iframe_link = 6;
+    string image_link = 7;
+    google.protobuf.Timestamp created_at = 8;
+}

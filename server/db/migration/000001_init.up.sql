@@ -42,7 +42,9 @@ CREATE TABLE "recipes" (
   "public" boolean NOT NULL DEFAULT false,
   "title" varchar NOT NULL,
   "description" varchar NOT NULL,
-  "image_link" varchar NOT NULL DEFAULT ''
+  "iframe_link" varchar NOT NULL DEFAULT '',
+  "image_link" varchar NOT NULL DEFAULT '',
+  "created_at" timestamptz NOT NULL DEFAULT (now())
 );
 
 CREATE TABLE "sessions" (
