@@ -476,6 +476,30 @@
         ]
       }
     },
+    "/v1/user/renew_token": {
+      "post": {
+        "summary": "Renew users access token",
+        "description": "Use this API to renew users access token",
+        "operationId": "HomeLife_RenewAccessToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbRenewAccessTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
     "/v1/verify_user": {
       "get": {
         "summary": "Verify user email",
@@ -736,7 +760,7 @@
         "user": {
           "$ref": "#/definitions/pbUser"
         },
-        "sessiondId": {
+        "sessionId": {
           "type": "string"
         },
         "accessToken": {
@@ -821,6 +845,31 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbRenewAccessTokenResponse": {
+      "type": "object",
+      "properties": {
+        "sessiondId": {
+          "type": "string"
+        },
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        },
+        "accessTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "refreshTokenExpiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "permissionToken": {
+          "type": "string"
         }
       }
     },

@@ -33,6 +33,18 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 	if err != nil {
 		return nil, status.Errorf(codes.Unauthenticated, "wrong password")
 	}
+	// check if user has max number of sessions
+	sessionCount, err := server.store.GetUserSessionsCount(ctx, user.ID)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot get user sessions")
+	}
+
+	if sessionCount >= int64(server.config.MaxUserSessions) {
+		_, err := server.store.DeleteOldestUserSession(ctx, user.ID)
+		if err != nil {
+			return nil, status.Error(codes.Internal, "cannot delete old user sessions")
+		}
+	}
 
 	accessToken, accessTokenPayload, err := server.tokenMaker.CreateToken(user.ID.String(), server.config.AccessTokenDuration)
 	if err != nil {
@@ -56,9 +68,10 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to create user session")
 	}
+
 	res := &pb.LoginUserResponse{
 		User:                  convertUser(user),
-		SessiondId:            session.ID.String(),
+		SessionId:             session.ID.String(),
 		AccessToken:           accessToken,
 		RefreshToken:          refreshToken,
 		AccessTokenExpiresAt:  timestamppb.New(accessTokenPayload.ExpiredAt),

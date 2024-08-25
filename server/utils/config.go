@@ -7,23 +7,24 @@ import (
 )
 
 type Config struct {
-	Environment string `mapstructure:"ENVIRONMENT"`
-	DBDriver string `mapstructure:"DB_DRIVER"`
-	DBSource string `mapstructure:"DB_SOURCE"`
-	MigrationURL string `mapstructure:"MIGRATION_URL"`
-	RedisURL string `mapstructure:"REDIS_URL"`
-	HTTPServerAddress string `mapstructure:"HTTP_SERVER_ADDRESS"`
-	MobileAppAddress string `mapstructure:"MOBILE_APP_ADDRESS"`
-	GRPCServerAddress string `mapstructure:"GRCP_SERVER_ADDRESS"`
-	TokenSymetricKey string `mapstructure:"TOKEN_SYMETRIC_KEY"`
-	AccessTokenDuration time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
+	Environment          string        `mapstructure:"ENVIRONMENT"`
+	DBDriver             string        `mapstructure:"DB_DRIVER"`
+	DBSource             string        `mapstructure:"DB_SOURCE"`
+	MigrationURL         string        `mapstructure:"MIGRATION_URL"`
+	RedisURL             string        `mapstructure:"REDIS_URL"`
+	HTTPServerAddress    string        `mapstructure:"HTTP_SERVER_ADDRESS"`
+	MobileAppAddress     string        `mapstructure:"MOBILE_APP_ADDRESS"`
+	GRPCServerAddress    string        `mapstructure:"GRCP_SERVER_ADDRESS"`
+	TokenSymetricKey     string        `mapstructure:"TOKEN_SYMETRIC_KEY"`
+	AccessTokenDuration  time.Duration `mapstructure:"ACCESS_TOKEN_DURATION"`
 	RefreshTokenDuration time.Duration `mapstructure:"REFRESH_TOKEN_DURATION"`
-	EmailSenderName string `mapstructure:"EMAIL_SENDER_NAME"`
-	EmailSenderAddress string `mapstructure:"EMAIL_SENDER_ADDRESS"`
-	EmailSenderPassword string `mapstructure:"EMAIL_SENDER_PASSWORD"`
+	EmailSenderName      string        `mapstructure:"EMAIL_SENDER_NAME"`
+	EmailSenderAddress   string        `mapstructure:"EMAIL_SENDER_ADDRESS"`
+	EmailSenderPassword  string        `mapstructure:"EMAIL_SENDER_PASSWORD"`
+	MaxUserSessions      int8          `mapstructure:"MAX_USER_SESSIONS"`
 }
 
-func LoadConfig (path string) (config Config, err error) {
+func LoadConfig(path string) (config Config, err error) {
 	viper.AddConfigPath(path)
 	viper.SetConfigName("app")
 	viper.SetConfigType("env")

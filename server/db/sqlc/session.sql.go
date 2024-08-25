@@ -12,6 +12,44 @@ import (
 	"github.com/google/uuid"
 )
 
+const cleanExpiredSessions = `-- name: CleanExpiredSessions :many
+DELETE FROM "sessions"
+WHERE expires_at < NOW()
+RETURNING id, user_id, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at
+`
+
+func (q *Queries) CleanExpiredSessions(ctx context.Context) ([]Session, error) {
+	rows, err := q.db.QueryContext(ctx, cleanExpiredSessions)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Session{}
+	for rows.Next() {
+		var i Session
+		if err := rows.Scan(
+			&i.ID,
+			&i.UserID,
+			&i.RefreshToken,
+			&i.UserAgent,
+			&i.ClientIp,
+			&i.IsBlocked,
+			&i.ExpiresAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const createSession = `-- name: CreateSession :one
 INSERT INTO "sessions" (
     id,
@@ -62,6 +100,33 @@ func (q *Queries) CreateSession(ctx context.Context, arg CreateSessionParams) (S
 	return i, err
 }
 
+const deleteOldestUserSession = `-- name: DeleteOldestUserSession :one
+DELETE FROM "sessions"
+WHERE id = (
+    SELECT id FROM "sessions" AS s
+    WHERE s.user_id = $1
+    ORDER BY expires_at ASC
+    LIMIT 1
+)
+RETURNING id, user_id, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at
+`
+
+func (q *Queries) DeleteOldestUserSession(ctx context.Context, userID uuid.UUID) (Session, error) {
+	row := q.db.QueryRowContext(ctx, deleteOldestUserSession, userID)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.RefreshToken,
+		&i.UserAgent,
+		&i.ClientIp,
+		&i.IsBlocked,
+		&i.ExpiresAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getSession = `-- name: GetSession :one
 SELECT id, user_id, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at FROM "sessions"
 WHERE id = $1 LIMIT 1
@@ -69,6 +134,52 @@ WHERE id = $1 LIMIT 1
 
 func (q *Queries) GetSession(ctx context.Context, id uuid.UUID) (Session, error) {
 	row := q.db.QueryRowContext(ctx, getSession, id)
+	var i Session
+	err := row.Scan(
+		&i.ID,
+		&i.UserID,
+		&i.RefreshToken,
+		&i.UserAgent,
+		&i.ClientIp,
+		&i.IsBlocked,
+		&i.ExpiresAt,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getUserSessionsCount = `-- name: GetUserSessionsCount :one
+SELECT COUNT(id) as count FROM "sessions"
+WHERE 
+    user_id = $1 AND
+    expires_at > NOW()
+LIMIT 1
+`
+
+func (q *Queries) GetUserSessionsCount(ctx context.Context, userID uuid.UUID) (int64, error) {
+	row := q.db.QueryRowContext(ctx, getUserSessionsCount, userID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const updateUserSession = `-- name: UpdateUserSession :one
+UPDATE "sessions"
+SET 
+    refresh_token = $1,
+    expires_at = $2
+WHERE id = $3
+RETURNING id, user_id, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at
+`
+
+type UpdateUserSessionParams struct {
+	RefreshToken string    `json:"refresh_token"`
+	ExpiresAt    time.Time `json:"expires_at"`
+	ID           uuid.UUID `json:"id"`
+}
+
+func (q *Queries) UpdateUserSession(ctx context.Context, arg UpdateUserSessionParams) (Session, error) {
+	row := q.db.QueryRowContext(ctx, updateUserSession, arg.RefreshToken, arg.ExpiresAt, arg.ID)
 	var i Session
 	err := row.Scan(
 		&i.ID,
