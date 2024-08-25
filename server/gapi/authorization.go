@@ -99,7 +99,6 @@ func (server *Server) getRefreshToken(ctx context.Context) (*token.Payload, erro
 		return nil, fmt.Errorf("refresh token not found")
 	}
 
-	print(refresh_token[0])
 	tokenPayload, err := server.tokenMaker.VerifyToken(refresh_token[0])
 	if err != nil {
 		return nil, fmt.Errorf("refresh token is not valid: %w", err)
