@@ -68,17 +68,20 @@ func (q *Queries) AddTask(ctx context.Context, arg AddTaskParams) (Task, error) 
 const assignTask = `-- name: AssignTask :one
 UPDATE "tasks"
 SET assigned_to = $1
-WHERE id = $2
+WHERE 
+    id = $2 AND
+    family_id = $3
 RETURNING id, name, description, done, family_id, created_by, assigned_to, execution_date, created_at
 `
 
 type AssignTaskParams struct {
 	AssignedTo uuid.NullUUID `json:"assigned_to"`
 	ID         uuid.UUID     `json:"id"`
+	FamilyID   uuid.UUID     `json:"family_id"`
 }
 
 func (q *Queries) AssignTask(ctx context.Context, arg AssignTaskParams) (Task, error) {
-	row := q.db.QueryRowContext(ctx, assignTask, arg.AssignedTo, arg.ID)
+	row := q.db.QueryRowContext(ctx, assignTask, arg.AssignedTo, arg.ID, arg.FamilyID)
 	var i Task
 	err := row.Scan(
 		&i.ID,
@@ -96,12 +99,19 @@ func (q *Queries) AssignTask(ctx context.Context, arg AssignTaskParams) (Task, e
 
 const deleteTask = `-- name: DeleteTask :one
 DELETE FROM "tasks"
-WHERE id = $1
+WHERE 
+    id = $1 AND
+    family_id = $2
 RETURNING id, name, description, done, family_id, created_by, assigned_to, execution_date, created_at
 `
 
-func (q *Queries) DeleteTask(ctx context.Context, id uuid.UUID) (Task, error) {
-	row := q.db.QueryRowContext(ctx, deleteTask, id)
+type DeleteTaskParams struct {
+	ID       uuid.UUID `json:"id"`
+	FamilyID uuid.UUID `json:"family_id"`
+}
+
+func (q *Queries) DeleteTask(ctx context.Context, arg DeleteTaskParams) (Task, error) {
+	row := q.db.QueryRowContext(ctx, deleteTask, arg.ID, arg.FamilyID)
 	var i Task
 	err := row.Scan(
 		&i.ID,
@@ -174,12 +184,19 @@ func (q *Queries) GetTasks(ctx context.Context, arg GetTasksParams) ([]Task, err
 const markTaskAsDone = `-- name: MarkTaskAsDone :one
 UPDATE "tasks"
 SET done = true
-WHERE id = $1
+WHERE 
+    id = $1 AND
+    family_id = $2
 RETURNING id, name, description, done, family_id, created_by, assigned_to, execution_date, created_at
 `
 
-func (q *Queries) MarkTaskAsDone(ctx context.Context, id uuid.UUID) (Task, error) {
-	row := q.db.QueryRowContext(ctx, markTaskAsDone, id)
+type MarkTaskAsDoneParams struct {
+	ID       uuid.UUID `json:"id"`
+	FamilyID uuid.UUID `json:"family_id"`
+}
+
+func (q *Queries) MarkTaskAsDone(ctx context.Context, arg MarkTaskAsDoneParams) (Task, error) {
+	row := q.db.QueryRowContext(ctx, markTaskAsDone, arg.ID, arg.FamilyID)
 	var i Task
 	err := row.Scan(
 		&i.ID,
