@@ -11,6 +11,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,20 +20,21 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	HomeLife_CreateUser_FullMethodName      = "/pb.HomeLife/CreateUser"
-	HomeLife_VerifyUser_FullMethodName      = "/pb.HomeLife/VerifyUser"
-	HomeLife_LoginUser_FullMethodName       = "/pb.HomeLife/LoginUser"
-	HomeLife_CreateFamily_FullMethodName    = "/pb.HomeLife/CreateFamily"
-	HomeLife_AddUserToFamily_FullMethodName = "/pb.HomeLife/AddUserToFamily"
-	HomeLife_AddTask_FullMethodName         = "/pb.HomeLife/AddTask"
-	HomeLife_MarkTaskAsDone_FullMethodName  = "/pb.HomeLife/MarkTaskAsDone"
-	HomeLife_DeleteTask_FullMethodName      = "/pb.HomeLife/DeleteTask"
-	HomeLife_AssignTask_FullMethodName      = "/pb.HomeLife/AssignTask"
-	HomeLife_GetTasks_FullMethodName        = "/pb.HomeLife/GetTasks"
-	HomeLife_CreateRecipe_FullMethodName    = "/pb.HomeLife/CreateRecipe"
-	HomeLife_UpdateRecipe_FullMethodName    = "/pb.HomeLife/UpdateRecipe"
-	HomeLife_GetRecipes_FullMethodName      = "/pb.HomeLife/GetRecipes"
-	HomeLife_DeleteRecipe_FullMethodName    = "/pb.HomeLife/DeleteRecipe"
+	HomeLife_CreateUser_FullMethodName       = "/pb.HomeLife/CreateUser"
+	HomeLife_VerifyUser_FullMethodName       = "/pb.HomeLife/VerifyUser"
+	HomeLife_LoginUser_FullMethodName        = "/pb.HomeLife/LoginUser"
+	HomeLife_CreateFamily_FullMethodName     = "/pb.HomeLife/CreateFamily"
+	HomeLife_AddUserToFamily_FullMethodName  = "/pb.HomeLife/AddUserToFamily"
+	HomeLife_AddTask_FullMethodName          = "/pb.HomeLife/AddTask"
+	HomeLife_MarkTaskAsDone_FullMethodName   = "/pb.HomeLife/MarkTaskAsDone"
+	HomeLife_DeleteTask_FullMethodName       = "/pb.HomeLife/DeleteTask"
+	HomeLife_AssignTask_FullMethodName       = "/pb.HomeLife/AssignTask"
+	HomeLife_GetTasks_FullMethodName         = "/pb.HomeLife/GetTasks"
+	HomeLife_CreateRecipe_FullMethodName     = "/pb.HomeLife/CreateRecipe"
+	HomeLife_UpdateRecipe_FullMethodName     = "/pb.HomeLife/UpdateRecipe"
+	HomeLife_GetRecipes_FullMethodName       = "/pb.HomeLife/GetRecipes"
+	HomeLife_DeleteRecipe_FullMethodName     = "/pb.HomeLife/DeleteRecipe"
+	HomeLife_RenewAccessToken_FullMethodName = "/pb.HomeLife/RenewAccessToken"
 )
 
 // HomeLifeClient is the client API for HomeLife service.
@@ -53,6 +55,7 @@ type HomeLifeClient interface {
 	UpdateRecipe(ctx context.Context, in *UpdateRecipeRequest, opts ...grpc.CallOption) (*UpdateRecipeResponse, error)
 	GetRecipes(ctx context.Context, in *GetRecipesRequest, opts ...grpc.CallOption) (*GetRecipesResponse, error)
 	DeleteRecipe(ctx context.Context, in *DeleteRecipeRequest, opts ...grpc.CallOption) (*DeleteRecipeResponse, error)
+	RenewAccessToken(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RenewAccessTokenResponse, error)
 }
 
 type homeLifeClient struct {
@@ -203,6 +206,16 @@ func (c *homeLifeClient) DeleteRecipe(ctx context.Context, in *DeleteRecipeReque
 	return out, nil
 }
 
+func (c *homeLifeClient) RenewAccessToken(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*RenewAccessTokenResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RenewAccessTokenResponse)
+	err := c.cc.Invoke(ctx, HomeLife_RenewAccessToken_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // HomeLifeServer is the server API for HomeLife service.
 // All implementations must embed UnimplementedHomeLifeServer
 // for forward compatibility
@@ -221,6 +234,7 @@ type HomeLifeServer interface {
 	UpdateRecipe(context.Context, *UpdateRecipeRequest) (*UpdateRecipeResponse, error)
 	GetRecipes(context.Context, *GetRecipesRequest) (*GetRecipesResponse, error)
 	DeleteRecipe(context.Context, *DeleteRecipeRequest) (*DeleteRecipeResponse, error)
+	RenewAccessToken(context.Context, *emptypb.Empty) (*RenewAccessTokenResponse, error)
 	mustEmbedUnimplementedHomeLifeServer()
 }
 
@@ -269,6 +283,9 @@ func (UnimplementedHomeLifeServer) GetRecipes(context.Context, *GetRecipesReques
 }
 func (UnimplementedHomeLifeServer) DeleteRecipe(context.Context, *DeleteRecipeRequest) (*DeleteRecipeResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteRecipe not implemented")
+}
+func (UnimplementedHomeLifeServer) RenewAccessToken(context.Context, *emptypb.Empty) (*RenewAccessTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RenewAccessToken not implemented")
 }
 func (UnimplementedHomeLifeServer) mustEmbedUnimplementedHomeLifeServer() {}
 
@@ -535,6 +552,24 @@ func _HomeLife_DeleteRecipe_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _HomeLife_RenewAccessToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).RenewAccessToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_RenewAccessToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).RenewAccessToken(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // HomeLife_ServiceDesc is the grpc.ServiceDesc for HomeLife service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -597,6 +632,10 @@ var HomeLife_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteRecipe",
 			Handler:    _HomeLife_DeleteRecipe_Handler,
+		},
+		{
+			MethodName: "RenewAccessToken",
+			Handler:    _HomeLife_RenewAccessToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

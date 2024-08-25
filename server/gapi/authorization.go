@@ -15,6 +15,7 @@ const (
 	authorizationHeader = "authorization"
 	authorizationBearer = "bearer"
 	permission_token    = "permission_token"
+	refresh_token       = "refresh_token"
 )
 
 func (server *Server) authorizeUser(ctx context.Context) (*token.Payload, error) {
@@ -85,4 +86,59 @@ func (server *Server) getPermissions(ctx context.Context) (*UserPermissions, err
 	}
 
 	return userPermissions, nil
+}
+
+func (server *Server) getRefreshToken(ctx context.Context) (*token.Payload, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return nil, fmt.Errorf("could not get request from context")
+	}
+
+	refresh_token := md[refresh_token]
+	if len(refresh_token) == 0 {
+		return nil, fmt.Errorf("refresh token not found")
+	}
+
+	print(refresh_token[0])
+	tokenPayload, err := server.tokenMaker.VerifyToken(refresh_token[0])
+	if err != nil {
+		return nil, fmt.Errorf("refresh token is not valid: %w", err)
+	}
+
+	return tokenPayload, nil
+}
+
+func (server *Server) compareSessionData(ctx context.Context, payload *token.Payload) error {
+	session, err := server.store.GetSession(ctx, payload.ID)
+	if err != nil {
+		return fmt.Errorf("cannot get user session: %w", err)
+	}
+	metadata := server.extractMetadata(ctx)
+	if !compareClientIP(session.ClientIp, metadata.ClientIP) {
+		return fmt.Errorf("wrong session: client_ips does not match")
+	}
+
+	if metadata.UserAgent != session.UserAgent {
+		return fmt.Errorf("wrong session: user_agents does not match")
+	}
+
+	return nil
+}
+
+func compareClientIP(sessionIP, requestIP string) bool {
+	if sessionIP == requestIP {
+		return true
+	}
+
+	if len(sessionIP) > 0 && len(requestIP) > 0 {
+		sessionIPParts := strings.Split(sessionIP, ".")
+		requestIPParts := strings.Split(requestIP, ".")
+		if len(sessionIPParts) >= 2 && len(requestIPParts) >= 2 &&
+			sessionIPParts[0] == requestIPParts[0] &&
+			sessionIPParts[1] == requestIPParts[1] {
+			return true
+		}
+	}
+
+	return false
 }

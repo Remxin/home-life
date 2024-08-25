@@ -1,18 +1,14 @@
 package gapi
 
 import (
-	"log"
-
 	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/pb"
-	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 // import
 
 func convertUser(user db.User) *pb.User {
-
 	userProto := &pb.User{
 		Id:                user.ID.String(),
 		Name:              user.FullName,
@@ -20,10 +16,6 @@ func convertUser(user db.User) *pb.User {
 		PasswordChangedAt: timestamppb.New(user.PasswordChangedAt),
 		CreatedAt:         timestamppb.New(user.CreatedAt),
 	}
-
-	jsonString := protojson.Format(userProto)
-	log.Printf("User Protobuf JSON: %s", jsonString)
-
 	return userProto
 }
 

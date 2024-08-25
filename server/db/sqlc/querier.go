@@ -13,12 +13,14 @@ import (
 type Querier interface {
 	AddTask(ctx context.Context, arg AddTaskParams) (Task, error)
 	AssignTask(ctx context.Context, arg AssignTaskParams) (Task, error)
+	CleanExpiredSessions(ctx context.Context) ([]Session, error)
 	CreateFamily(ctx context.Context, arg CreateFamilyParams) (Family, error)
 	CreatePermissions(ctx context.Context, arg CreatePermissionsParams) (Permission, error)
 	CreateRecipe(ctx context.Context, arg CreateRecipeParams) (Recipe, error)
 	CreateSession(ctx context.Context, arg CreateSessionParams) (Session, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	CreateVerifyEmail(ctx context.Context, arg CreateVerifyEmailParams) (VerifyEmail, error)
+	DeleteOldestUserSession(ctx context.Context, userID uuid.UUID) (Session, error)
 	DeleteRecipe(ctx context.Context, arg DeleteRecipeParams) (Recipe, error)
 	DeleteTask(ctx context.Context, id uuid.UUID) (Task, error)
 	GetMembers(ctx context.Context, familyID uuid.UUID) ([]GetMembersRow, error)
@@ -28,9 +30,11 @@ type Querier interface {
 	GetTasks(ctx context.Context, arg GetTasksParams) ([]Task, error)
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserById(ctx context.Context, id uuid.UUID) (User, error)
+	GetUserSessionsCount(ctx context.Context, userID uuid.UUID) (int64, error)
 	MarkTaskAsDone(ctx context.Context, id uuid.UUID) (Task, error)
 	UpdateRecipe(ctx context.Context, arg UpdateRecipeParams) (Recipe, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)
+	UpdateUserSession(ctx context.Context, arg UpdateUserSessionParams) (Session, error)
 	UpdateVerifyEmail(ctx context.Context, arg UpdateVerifyEmailParams) (VerifyEmail, error)
 }
 
