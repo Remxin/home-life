@@ -1,10 +1,22 @@
-const colors = {
-    shadedWhite: "#FEFEFE88",
-    white: "#FEFEFE",
-    beige: "#F5EEE6",
-    yellow: "#FFF8E3",
-    darkBeige: "#F3D7CA",
-    pink: "#E6A4B4"
-}
+/**
+ * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
+ * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ */
 
-export default colors
+const tintColorLight = '#0a7ea4';
+const tintColorDark = '#fff';
+
+export const Colors = {
+  dark: "#03045e",
+  mediumDark: "#0077b6",
+  blue: "#00b4d8",
+  mediumLight: "#90e0ef",
+  light: "#caf0f8",
+  black: "#222222",
+  brightWhite: "#fefefe",
+  white: "#eeeeee"
+};
+
+export const Sizes = {
+
+}
