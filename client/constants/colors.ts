@@ -14,9 +14,9 @@ export const Colors = {
   light: "#caf0f8",
   black: "#222222",
   brightWhite: "#fefefe",
-  white: "#eeeeee"
+  white: "#eeeeee",
+  lightGray: "#ddddee",
+  red: "#B22222"
 };
 
-export const Sizes = {
 
-}

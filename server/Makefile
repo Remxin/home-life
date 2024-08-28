@@ -25,6 +25,14 @@ proto:
 	proto/*.proto
 	statik -src=./doc/swagger -dest=./doc
 
+client_proto:
+	rm -f ../client/grpc/*
+	protoc --proto_path=proto \
+	--js_out=import_style=commonjs,binary:../client/grpc \
+	--grpc-web_out=import_style=typescript,mode=grpcwebtext:../client/grpc \
+	proto/*proto
+
+
 db_docs:
 	dbdocs build doc/db.dbml
 
@@ -35,4 +43,4 @@ server:
 	go run main.go
 
 
-.PHONY: createdb migrateup migratedown sqlc mock proto db_docs db_schema server
+.PHONY: createdb migrateup migratedown sqlc mock proto client_proto db_docs db_schema server 

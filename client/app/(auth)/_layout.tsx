@@ -14,13 +14,7 @@ export default function TabLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: 'Auth Screen',
-        }}
-      />
-      <Stack.Screen
-        name="login"
-        options={{
-          title: 'Login',
+          title: 'login',
         }}
       />
       <Stack.Screen
