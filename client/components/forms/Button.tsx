@@ -15,10 +15,18 @@ type ComponentT = {
 }
 
 const OpacityClickable = ({ text, buttonStyle, textStyle}: ComponentT) => {
-  const { submit } = useForm()
+  const { submit, getValuesList, setError, clearErrors } = useForm()
+
+  async function submitAndHandleErrors() {
+    const fieldViolations = await submit(getValuesList())
+    if (!fieldViolations) return clearErrors()
+    for (let fieldViolation of fieldViolations) {
+      setError(fieldViolation.field, fieldViolation.description)
+    }
+  }
 
   return (
-    <TouchableOpacity activeOpacity={0.7} style={[styles.button, buttonStyle]} onPress={submit}><Text style={[styles.buttonText, textStyle]}>{text}</Text></TouchableOpacity>
+    <TouchableOpacity activeOpacity={0.7} style={[styles.button, buttonStyle]} onPress={submitAndHandleErrors}><Text style={[styles.buttonText, textStyle]}>{text}</Text></TouchableOpacity>
   )
 }
 

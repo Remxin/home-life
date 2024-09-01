@@ -1,4 +1,5 @@
 import { createContext, useContext, useState } from "react";
+import { FieldViolation } from "@/utils/converter";
 
 interface ObjT {
     [key: string]: string
@@ -6,18 +7,23 @@ interface ObjT {
 
 type ContextT = {
     errors: {[key: string]: string}
-    submit: () => any
+    getValuesList: () => string[]
+    submit: (args: string[]) => Promise<
+    FieldViolation[] | null>
     getValue: (key: string) => string
     setValue: (key: string, newVal: string) => void
     getError: (key: string) => string
     setError: (key: string, newVal: string) => void
+    clearErrors: () => void
    
 }
 
 type FormT = {
     children: React.ReactNode | React.ReactNode[]
     values: string[],
-    submit: () => any
+    submit: (args: string[]) => Promise<
+    FieldViolation[] | null
+  >
 }
 
 function createDataFromArray(arr: string[]) {
@@ -34,6 +40,10 @@ const FormContext = createContext<null | ContextT>(null)
 export const Form = ({ children, values, submit }: FormT) => {
     const [data, setData] = useState<ObjT>(createDataFromArray(values))
     const [errors, setErrors] = useState<ObjT>(createDataFromArray(values))
+
+    function getValuesList(): string[] {
+        return Object.values(data)
+    }
 
     function getValue(key: string) {
         if (data[key] === null) throw new Error("this key does not exist")
@@ -59,8 +69,12 @@ export const Form = ({ children, values, submit }: FormT) => {
         })
     }
 
+    function clearErrors() {
+        setErrors(createDataFromArray(values))
+    }
+
     return (
-        <FormContext.Provider value={{ errors, getValue, setValue, getError, setError, submit }}>
+        <FormContext.Provider value={{ errors, getValuesList, getValue, setValue, getError, setError, submit, clearErrors }}>
             {children}
         </FormContext.Provider>
     )
