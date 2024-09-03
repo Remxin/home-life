@@ -33,6 +33,8 @@ var rpc_login_user_pb = require('./rpc_login_user_pb.js');
 goog.object.extend(proto, rpc_login_user_pb);
 var rpc_create_family_pb = require('./rpc_create_family_pb.js');
 goog.object.extend(proto, rpc_create_family_pb);
+var rpc_get_family_pb = require('./rpc_get_family_pb.js');
+goog.object.extend(proto, rpc_get_family_pb);
 var rpc_add_user_to_family_pb = require('./rpc_add_user_to_family_pb.js');
 goog.object.extend(proto, rpc_add_user_to_family_pb);
 var rpc_add_task_pb = require('./rpc_add_task_pb.js');

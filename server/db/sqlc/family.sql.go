@@ -7,7 +7,6 @@ package db
 
 import (
 	"context"
-	"time"
 
 	"github.com/google/uuid"
 )
@@ -41,38 +40,41 @@ func (q *Queries) CreateFamily(ctx context.Context, arg CreateFamilyParams) (Fam
 	return i, err
 }
 
+const getFamily = `-- name: GetFamily :one
+SELECT id, name, owner_id, created_at
+FROM families
+WHERE id = $1
+LIMIT 1
+`
+
+func (q *Queries) GetFamily(ctx context.Context, familyID uuid.UUID) (Family, error) {
+	row := q.db.QueryRowContext(ctx, getFamily, familyID)
+	var i Family
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.OwnerID,
+		&i.CreatedAt,
+	)
+	return i, err
+}
+
 const getMembers = `-- name: GetMembers :many
-SELECT users.id, full_name, email, hashed_password, is_verified, password_changed_at, created_at, p.id, family_id, can_read, can_edit, can_create, can_modify 
+SELECT users.id, users.full_name, users.email, users.hashed_password, users.is_verified, users.password_changed_at, users.created_at
 FROM users 
 INNER JOIN permissions p USING (id) 
 WHERE p.family_id = $1
 `
 
-type GetMembersRow struct {
-	ID                uuid.UUID `json:"id"`
-	FullName          string    `json:"full_name"`
-	Email             string    `json:"email"`
-	HashedPassword    string    `json:"hashed_password"`
-	IsVerified        bool      `json:"is_verified"`
-	PasswordChangedAt time.Time `json:"password_changed_at"`
-	CreatedAt         time.Time `json:"created_at"`
-	ID_2              uuid.UUID `json:"id_2"`
-	FamilyID          uuid.UUID `json:"family_id"`
-	CanRead           bool      `json:"can_read"`
-	CanEdit           bool      `json:"can_edit"`
-	CanCreate         bool      `json:"can_create"`
-	CanModify         bool      `json:"can_modify"`
-}
-
-func (q *Queries) GetMembers(ctx context.Context, familyID uuid.UUID) ([]GetMembersRow, error) {
+func (q *Queries) GetMembers(ctx context.Context, familyID uuid.UUID) ([]User, error) {
 	rows, err := q.db.QueryContext(ctx, getMembers, familyID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []GetMembersRow{}
+	items := []User{}
 	for rows.Next() {
-		var i GetMembersRow
+		var i User
 		if err := rows.Scan(
 			&i.ID,
 			&i.FullName,
@@ -81,12 +83,6 @@ func (q *Queries) GetMembers(ctx context.Context, familyID uuid.UUID) ([]GetMemb
 			&i.IsVerified,
 			&i.PasswordChangedAt,
 			&i.CreatedAt,
-			&i.ID_2,
-			&i.FamilyID,
-			&i.CanRead,
-			&i.CanEdit,
-			&i.CanCreate,
-			&i.CanModify,
 		); err != nil {
 			return nil, err
 		}

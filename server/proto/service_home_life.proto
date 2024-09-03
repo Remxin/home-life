@@ -8,6 +8,7 @@ import "rpc_create_user.proto";
 import "rpc_verify_user.proto";
 import "rpc_login_user.proto";
 import "rpc_create_family.proto";
+import "rpc_get_family.proto";
 import "rpc_add_user_to_family.proto";
 import "rpc_add_task.proto";
 import "rpc_assign_task.proto";
@@ -78,6 +79,16 @@ service HomeLife {
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
             description: "Use this API to create a family group";
             summary: "Create family group"
+        };
+    }
+
+    rpc GetFamily (google.protobuf.Empty) returns (GetFamilyResponse) {
+        option (google.api.http) = {
+            get: "/v1/family"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to get user's family and its members";
+            summary: "Get users family and its members"
         };
     }
 
