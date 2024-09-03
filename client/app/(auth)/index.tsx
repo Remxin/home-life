@@ -35,11 +35,12 @@ const AuthScreen = () => {
     if (error) {
       return error.getFieldViolations();
     }
-    HomeLifeAsyncStorage.setData("access_token", response?.getAccessToken())
-    HomeLifeAsyncStorage.setData("access_token_expires_at", response?.getAccessTokenExpiresAt())
-    HomeLifeAsyncStorage.setData("refresh_token", response?.getRefreshToken())
-    HomeLifeAsyncStorage.setData("refresh_token_expires_at", response?.getRefreshTokenExpiresAt())
-    HomeLifeAsyncStorage.setData("permission_token", response?.getPermissionsToken())
+    await HomeLifeAsyncStorage.setData("access_token", response?.access_token)
+    await HomeLifeAsyncStorage.setData("access_token_expires_at", response?.access_token_expires_at)
+    await HomeLifeAsyncStorage.setData("refresh_token", response?.refresh_token)
+    await HomeLifeAsyncStorage.setData("refresh_token_expires_at", response?.refresh_token_expires_at)
+    await HomeLifeAsyncStorage.setData("permissions_token", response?.permissions_token)
+
     router.replace("/(auth)/getfamily")
     return null;
   }

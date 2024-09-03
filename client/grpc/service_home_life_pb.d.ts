@@ -19,5 +19,6 @@ import * as rpc_get_recipes_pb from './rpc_get_recipes_pb'; // proto import: "rp
 import * as rpc_delete_recipe_pb from './rpc_delete_recipe_pb'; // proto import: "rpc_delete_recipe.proto"
 import * as rpc_renew_access_token_pb from './rpc_renew_access_token_pb'; // proto import: "rpc_renew_access_token.proto"
 import * as protoc$gen$openapiv2_options_annotations_pb from './protoc-gen-openapiv2/options/annotations_pb'; // proto import: "protoc-gen-openapiv2/options/annotations.proto"
+import * as google_protobuf_descriptor_pb from 'google-protobuf/google/protobuf/descriptor_pb'; // proto import: "google/protobuf/descriptor.proto"
 
 

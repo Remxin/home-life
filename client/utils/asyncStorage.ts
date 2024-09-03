@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class HomeLifeAsyncStorage {
-  static keys = ["access_token", "refresh_token", "permission_token", "access_token_expires_at", "refresh_token_expires_at"] as const
+  static keys = ["access_token", "refresh_token", "permissions_token", "access_token_expires_at", "refresh_token_expires_at"] as const
 
   static async getData(key: typeof HomeLifeAsyncStorage.keys[number]): Promise<string> {
      try {

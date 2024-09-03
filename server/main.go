@@ -7,6 +7,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"strings"
 
 	db "github.com/Remxin/home-life/server/db/sqlc"
 	_ "github.com/Remxin/home-life/server/doc/statik"
@@ -57,16 +58,16 @@ func main() {
 }
 
 func runGrcpServer(config utils.Config, store db.Store, taskDistributor worker.TaskDistributor) {
-	server, err := gapi.NewServer(config, store, taskDistributor) 
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Msg("cannot create server")
 	}
-	
+
 	grpcLogger := grpc.UnaryInterceptor(gapi.GrpcLogger)
 	grpcServer := grpc.NewServer(grpcLogger)
 	pb.RegisterHomeLifeServer(grpcServer, server)
 	reflection.Register(grpcServer)
-	
+
 	listener, err := net.Listen("tcp", config.GRPCServerAddress)
 	if err != nil {
 		log.Fatal().Msg("cannot create listener")
@@ -80,7 +81,7 @@ func runGrcpServer(config utils.Config, store db.Store, taskDistributor worker.T
 }
 
 func runGatewayServer(config utils.Config, store db.Store, taskDistributor worker.TaskDistributor) {
-	server, err := gapi.NewServer(config, store, taskDistributor) 
+	server, err := gapi.NewServer(config, store, taskDistributor)
 	if err != nil {
 		log.Fatal().Msg("cannot create server")
 	}
@@ -94,8 +95,8 @@ func runGatewayServer(config utils.Config, store db.Store, taskDistributor worke
 			DiscardUnknown: true,
 		},
 	})
-	
-	grpcMux := runtime.NewServeMux(jsonOption)
+
+	grpcMux := runtime.NewServeMux(jsonOption, runtime.WithIncomingHeaderMatcher(customHeaderMatcher))
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -114,7 +115,7 @@ func runGatewayServer(config utils.Config, store db.Store, taskDistributor worke
 	}
 	swaggerHander := http.StripPrefix("/swagger/", http.FileServer(statikFS))
 	mux.Handle("/swagger/", swaggerHander)
-	
+
 	listener, err := net.Listen("tcp", config.HTTPServerAddress)
 	if err != nil {
 		log.Fatal().Msg("cannot create listener")
@@ -148,5 +149,17 @@ func runTaskProcessor(config utils.Config, redisOpt asynq.RedisClientOpt, store 
 	err := taskProcessor.Start()
 	if err != nil {
 		log.Fatal().Err(err).Msg("cannot start task processor")
-	}	
+	}
+}
+
+func customHeaderMatcher(key string) (string, bool) {
+	// Convert the header key to lowercase for consistent matching
+	lowerKey := strings.ToLower(key)
+
+	switch lowerKey {
+	case "authorization", "permission_token":
+		return key, true // Forward the "authorization" and "permission_token" headers
+	default:
+		return runtime.DefaultHeaderMatcher(key) // Default behavior for other headers
+	}
 }

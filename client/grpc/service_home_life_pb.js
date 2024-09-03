@@ -59,3 +59,32 @@ var rpc_renew_access_token_pb = require('./rpc_renew_access_token_pb.js');
 goog.object.extend(proto, rpc_renew_access_token_pb);
 var protoc$gen$openapiv2_options_annotations_pb = require('./protoc-gen-openapiv2/options/annotations_pb.js');
 goog.object.extend(proto, protoc$gen$openapiv2_options_annotations_pb);
+var google_protobuf_descriptor_pb = require('google-protobuf/google/protobuf/descriptor_pb.js');
+goog.object.extend(proto, google_protobuf_descriptor_pb);
+goog.exportSymbol('proto.pb.permissionToken', null, global);
+
+/**
+ * A tuple of {field number, class constructor} for the extension
+ * field named `permissionToken`.
+ * @type {!jspb.ExtensionFieldInfo<string>}
+ */
+proto.pb.permissionToken = new jspb.ExtensionFieldInfo(
+    50001,
+    {permissionToken: 0},
+    null,
+     /** @type {?function((boolean|undefined),!jspb.Message=): !Object} */ (
+         null),
+    0);
+
+google_protobuf_descriptor_pb.MethodOptions.extensionsBinary[50001] = new jspb.ExtensionFieldBinaryInfo(
+    proto.pb.permissionToken,
+    jspb.BinaryReader.prototype.readString,
+    jspb.BinaryWriter.prototype.writeString,
+    undefined,
+    undefined,
+    false);
+// This registers the extension field with the extended class, so that
+// toObject() will function correctly.
+google_protobuf_descriptor_pb.MethodOptions.extensions[50001] = proto.pb.permissionToken;
+
+goog.object.extend(exports, proto.pb);

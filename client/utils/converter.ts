@@ -1,3 +1,4 @@
+import { GetFamilyResponse } from "@/grpc/rpc_get_family_pb";
 import { LoginUserResponse } from "@/grpc/rpc_login_user_pb";
 import { RpcError, StatusCode, Metadata } from "grpc-web";
 
@@ -24,29 +25,6 @@ export class HomeLifeRpcError extends RpcError {
   }
 }
 
-export function APItoLoginResponse(
-  successResponse: any
-): LoginUserResponse | null {
-  try {
-    const loginUserResponse = new LoginUserResponse();
-    loginUserResponse.setUser(successResponse.user);
-    loginUserResponse.setSessionId(successResponse.session_id);
-    loginUserResponse.setAccessToken(successResponse.access_token);
-    loginUserResponse.setAccessTokenExpiresAt(
-      successResponse.access_token_expires_at
-    );
-    loginUserResponse.setRefreshToken(successResponse.refresh_token);
-    loginUserResponse.setRefreshTokenExpiresAt(
-      successResponse.refresh_token_expires_at
-    );
-    loginUserResponse.setPermissionsToken(successResponse?.permission_token)
-    return loginUserResponse;
-  } catch (err) {
-    console.log(err);
-    return null;
-  }
-}
-
 export function APItoError(errorData: any): HomeLifeRpcError {
   const fieldViolations: FieldViolation[] =
     errorData.details?.[0]?.field_violations;
@@ -64,6 +42,16 @@ export function UnknownError(err: any): HomeLifeRpcError {
     {}
   );
   return rpcError;
+}
+
+export function MissingHeadersError(): HomeLifeRpcError {
+  const rpcError = new HomeLifeRpcError(
+    StatusCode.UNAUTHENTICATED,
+    "missing authentication headers",
+    {}
+  )
+
+  return rpcError
 }
 
 export function checkFieldsSet(fieldsArr: [string, string][]): FieldViolation[] {

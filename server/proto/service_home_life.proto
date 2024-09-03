@@ -21,6 +21,8 @@ import "rpc_get_recipes.proto";
 import "rpc_delete_recipe.proto";
 import "rpc_renew_access_token.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
+import "google/protobuf/descriptor.proto";
+
 
 option go_package = "github.com/Remxin/home-life/server/pb";
 
@@ -208,3 +210,7 @@ service HomeLife {
         };
     }
 }
+
+extend google.protobuf.MethodOptions {
+    string permission_token = 50001;
+  }

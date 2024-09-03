@@ -1,12 +1,36 @@
 import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PageView from "@/components/PageView";
 import { horizontalScale, verticalScale } from "@/utils/metrics";
 import { Colors } from "@/constants/Colors";
+import GrpcGatewayClient from "@/utils/grpcClient";
+import { useRouter } from "expo-router";
 
 import SimpleButton from "@/components/SimpleButton";
 
-const getfamily = () => {
+
+const GetFamily = () => {
+  const [loaded, setLoaded] = useState(false)
+  const router = useRouter()
+  useEffect(() => {
+    async function getFamily() {
+      const [error, response] = await GrpcGatewayClient.getFamily()
+      if (error) {
+        console.log(error)
+        // TODO: error handling
+        setLoaded(true)
+        return
+      }
+      console.log(response?.family)
+      router.replace(`/(tabs)/?family=${JSON.stringify(response?.family)}&members=${JSON.stringify(response?.members)}`)
+
+    }
+    getFamily()
+  }, [])
+
+  if (!loaded) return (
+    <View><Text>Loading...</Text></View>
+  )
   return (
     <PageView>
       <View style={styles.buttonsContainer}>
@@ -75,4 +99,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default getfamily;
+export default GetFamily;
