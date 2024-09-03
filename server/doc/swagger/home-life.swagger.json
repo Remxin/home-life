@@ -56,6 +56,28 @@
       }
     },
     "/v1/family": {
+      "get": {
+        "summary": "Get users family and its members",
+        "description": "Use this API to get user's family and its members",
+        "operationId": "HomeLife_GetFamily",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetFamilyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "HomeLife"
+        ]
+      },
       "post": {
         "summary": "Create family group",
         "description": "Use this API to create a family group",
@@ -716,6 +738,21 @@
         "createdAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "pbGetFamilyResponse": {
+      "type": "object",
+      "properties": {
+        "family": {
+          "$ref": "#/definitions/pbFamily"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbUser"
+          }
         }
       }
     },

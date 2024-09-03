@@ -1,0 +1,13 @@
+syntax = "proto3";
+package pb;
+
+import "family.proto";
+import "user.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+
+message GetFamilyResponse {
+    Family family = 1;
+    repeated User members = 2;
+}

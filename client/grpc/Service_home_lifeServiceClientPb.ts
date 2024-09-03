@@ -26,6 +26,7 @@ import * as rpc_create_recipe_pb from './rpc_create_recipe_pb'; // proto import:
 import * as rpc_create_user_pb from './rpc_create_user_pb'; // proto import: "rpc_create_user.proto"
 import * as rpc_delete_recipe_pb from './rpc_delete_recipe_pb'; // proto import: "rpc_delete_recipe.proto"
 import * as rpc_delete_task_pb from './rpc_delete_task_pb'; // proto import: "rpc_delete_task.proto"
+import * as rpc_get_family_pb from './rpc_get_family_pb'; // proto import: "rpc_get_family.proto"
 import * as rpc_get_recipes_pb from './rpc_get_recipes_pb'; // proto import: "rpc_get_recipes.proto"
 import * as rpc_get_tasks_pb from './rpc_get_tasks_pb'; // proto import: "rpc_get_tasks.proto"
 import * as rpc_login_user_pb from './rpc_login_user_pb'; // proto import: "rpc_login_user.proto"
@@ -224,6 +225,49 @@ export class HomeLifeClient {
     request,
     metadata || {},
     this.methodDescriptorCreateFamily);
+  }
+
+  methodDescriptorGetFamily = new grpcWeb.MethodDescriptor(
+    '/pb.HomeLife/GetFamily',
+    grpcWeb.MethodType.UNARY,
+    google_protobuf_empty_pb.Empty,
+    rpc_get_family_pb.GetFamilyResponse,
+    (request: google_protobuf_empty_pb.Empty) => {
+      return request.serializeBinary();
+    },
+    rpc_get_family_pb.GetFamilyResponse.deserializeBinary
+  );
+
+  getFamily(
+    request: google_protobuf_empty_pb.Empty,
+    metadata?: grpcWeb.Metadata | null): Promise<rpc_get_family_pb.GetFamilyResponse>;
+
+  getFamily(
+    request: google_protobuf_empty_pb.Empty,
+    metadata: grpcWeb.Metadata | null,
+    callback: (err: grpcWeb.RpcError,
+               response: rpc_get_family_pb.GetFamilyResponse) => void): grpcWeb.ClientReadableStream<rpc_get_family_pb.GetFamilyResponse>;
+
+  getFamily(
+    request: google_protobuf_empty_pb.Empty,
+    metadata?: grpcWeb.Metadata | null,
+    callback?: (err: grpcWeb.RpcError,
+               response: rpc_get_family_pb.GetFamilyResponse) => void) {
+    if (callback !== undefined) {
+      return this.client_.rpcCall(
+        this.hostname_ +
+          '/pb.HomeLife/GetFamily',
+        request,
+        metadata || {},
+        this.methodDescriptorGetFamily,
+        callback);
+    }
+    return this.client_.unaryCall(
+    this.hostname_ +
+      '/pb.HomeLife/GetFamily',
+    request,
+    metadata || {},
+    this.methodDescriptorGetFamily);
   }
 
   methodDescriptorAddUserToFamily = new grpcWeb.MethodDescriptor(

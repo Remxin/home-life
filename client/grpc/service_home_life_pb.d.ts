@@ -6,6 +6,7 @@ import * as rpc_create_user_pb from './rpc_create_user_pb'; // proto import: "rp
 import * as rpc_verify_user_pb from './rpc_verify_user_pb'; // proto import: "rpc_verify_user.proto"
 import * as rpc_login_user_pb from './rpc_login_user_pb'; // proto import: "rpc_login_user.proto"
 import * as rpc_create_family_pb from './rpc_create_family_pb'; // proto import: "rpc_create_family.proto"
+import * as rpc_get_family_pb from './rpc_get_family_pb'; // proto import: "rpc_get_family.proto"
 import * as rpc_add_user_to_family_pb from './rpc_add_user_to_family_pb'; // proto import: "rpc_add_user_to_family.proto"
 import * as rpc_add_task_pb from './rpc_add_task_pb'; // proto import: "rpc_add_task.proto"
 import * as rpc_assign_task_pb from './rpc_assign_task_pb'; // proto import: "rpc_assign_task.proto"
