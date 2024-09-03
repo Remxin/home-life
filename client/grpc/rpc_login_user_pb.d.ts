@@ -51,6 +51,11 @@ export class LoginUserResponse extends jspb.Message {
   hasRefreshTokenExpiresAt(): boolean;
   clearRefreshTokenExpiresAt(): LoginUserResponse;
 
+  getPermissionsToken(): string;
+  setPermissionsToken(value: string): LoginUserResponse;
+  hasPermissionsToken(): boolean;
+  clearPermissionsToken(): LoginUserResponse;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): LoginUserResponse.AsObject;
   static toObject(includeInstance: boolean, msg: LoginUserResponse): LoginUserResponse.AsObject;
@@ -67,6 +72,12 @@ export namespace LoginUserResponse {
     refreshToken: string,
     accessTokenExpiresAt?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     refreshTokenExpiresAt?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    permissionsToken?: string,
+  }
+
+  export enum PermissionsTokenCase { 
+    _PERMISSIONS_TOKEN_NOT_SET = 0,
+    PERMISSIONS_TOKEN = 7,
   }
 }
 

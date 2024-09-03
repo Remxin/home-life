@@ -776,6 +776,9 @@
         "refreshTokenExpiresAt": {
           "type": "string",
           "format": "date-time"
+        },
+        "permissionsToken": {
+          "type": "string"
         }
       }
     },
