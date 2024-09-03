@@ -266,7 +266,8 @@ proto.pb.LoginUserResponse.toObject = function(includeInstance, msg) {
     accessToken: jspb.Message.getFieldWithDefault(msg, 3, ""),
     refreshToken: jspb.Message.getFieldWithDefault(msg, 4, ""),
     accessTokenExpiresAt: (f = msg.getAccessTokenExpiresAt()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    refreshTokenExpiresAt: (f = msg.getRefreshTokenExpiresAt()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
+    refreshTokenExpiresAt: (f = msg.getRefreshTokenExpiresAt()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    permissionsToken: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
   if (includeInstance) {
@@ -329,6 +330,10 @@ proto.pb.LoginUserResponse.deserializeBinaryFromReader = function(msg, reader) {
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setRefreshTokenExpiresAt(value);
+      break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPermissionsToken(value);
       break;
     default:
       reader.skipField();
@@ -402,6 +407,13 @@ proto.pb.LoginUserResponse.serializeBinaryToWriter = function(message, writer) {
       6,
       f,
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 7));
+  if (f != null) {
+    writer.writeString(
+      7,
+      f
     );
   }
 };
@@ -569,6 +581,42 @@ proto.pb.LoginUserResponse.prototype.clearRefreshTokenExpiresAt = function() {
  */
 proto.pb.LoginUserResponse.prototype.hasRefreshTokenExpiresAt = function() {
   return jspb.Message.getField(this, 6) != null;
+};
+
+
+/**
+ * optional string permissions_token = 7;
+ * @return {string}
+ */
+proto.pb.LoginUserResponse.prototype.getPermissionsToken = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.pb.LoginUserResponse} returns this
+ */
+proto.pb.LoginUserResponse.prototype.setPermissionsToken = function(value) {
+  return jspb.Message.setField(this, 7, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.pb.LoginUserResponse} returns this
+ */
+proto.pb.LoginUserResponse.prototype.clearPermissionsToken = function() {
+  return jspb.Message.setField(this, 7, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.pb.LoginUserResponse.prototype.hasPermissionsToken = function() {
+  return jspb.Message.getField(this, 7) != null;
 };
 
 

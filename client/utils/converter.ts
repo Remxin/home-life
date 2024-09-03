@@ -39,6 +39,7 @@ export function APItoLoginResponse(
     loginUserResponse.setRefreshTokenExpiresAt(
       successResponse.refresh_token_expires_at
     );
+    loginUserResponse.setPermissionsToken(successResponse?.permission_token)
     return loginUserResponse;
   } catch (err) {
     console.log(err);

@@ -2,6 +2,7 @@ package gapi
 
 import (
 	"context"
+	"database/sql"
 
 	db "github.com/Remxin/home-life/server/db/sqlc"
 	"github.com/Remxin/home-life/server/pb"
@@ -76,8 +77,23 @@ func (server *Server) LoginUser(ctx context.Context, req *pb.LoginUserRequest) (
 		RefreshToken:          refreshToken,
 		AccessTokenExpiresAt:  timestamppb.New(accessTokenPayload.ExpiredAt),
 		RefreshTokenExpiresAt: timestamppb.New(refreshTokenPayload.ExpiredAt),
+		PermissionsToken:      nil,
 	}
 
+	permissions, err := server.store.GetPermissions(ctx, user.ID)
+	if err != nil {
+		if err != sql.ErrNoRows {
+			return nil, status.Errorf(codes.Internal, "cannot get user permissions: %s", err)
+		} else {
+			return res, nil
+		}
+	}
+
+	permission_token, _, err := server.tokenMaker.CreatePermissionToken(user.ID.String(), permissions.ID.String(), server.config.AccessTokenDuration)
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "cannot create user's permission token: %s", err)
+	}
+	res.PermissionsToken = &permission_token
 	return res, nil
 }
 
