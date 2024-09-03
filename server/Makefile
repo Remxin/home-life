@@ -32,7 +32,6 @@ client_proto:
 	--grpc-web_out=import_style=typescript,mode=grpcwebtext:../client/grpc \
 	proto/*proto
 
-
 db_docs:
 	dbdocs build doc/db.dbml
 

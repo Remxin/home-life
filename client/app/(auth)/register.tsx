@@ -12,7 +12,7 @@ import Button from "@/components/forms/Button";
 import Input from "@/components/forms/Input";
 
 // grcp
-import grcpClient from "@/app/GrpcClient";
+import grcpClient from "@/utils/grpcClient";
 import {
   validateEmail,
   validatePassword,

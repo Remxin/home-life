@@ -4,6 +4,7 @@ import { moderateScale, horizontalScale, verticalScale } from "@/utils/metrics";
 
 import PageView from "@/components/PageView";
 import Svg, { Path } from "react-native-svg";
+import { Link } from "expo-router";
 import { Colors } from "@/constants/Colors";
 
 // forms
@@ -12,12 +13,33 @@ import Button from "@/components/forms/Button";
 import Input from "@/components/forms/Input";
 
 // grcp
-import grcpClient from "@/app/GrpcClient";
+import GrpcGatewayClient from "@/utils/grpcClient";
+
+// validations
 import { validateEmail, validatePassword } from "@/validations/val";
-import { Link } from "expo-router";
+import { checkFieldsSet, FieldViolation } from "@/utils/converter";
+import HomeLifeAsyncStorage from "@/utils/asyncStorage";
 
 const AuthScreen = () => {
-  function onSubmit() {}
+  async function onSubmit([email, password]: string[]): Promise<
+    FieldViolation[] | null
+  > {
+    const fieldsNotSet = checkFieldsSet([["email", email], ["password", password]])
+    if (fieldsNotSet.length > 0) return fieldsNotSet
+
+    const [error, response] = await GrpcGatewayClient.loginUser(
+      email,
+      password
+    );
+    if (error) {
+      return error.getFieldViolations();
+    }
+    HomeLifeAsyncStorage.setData("access_token", response?.getAccessToken())
+    HomeLifeAsyncStorage.setData("access_token_expires_at", response?.getAccessTokenExpiresAt())
+    HomeLifeAsyncStorage.setData("refresh_token", response?.getRefreshToken())
+    HomeLifeAsyncStorage.setData("refresh_token_expires_at", response?.getRefreshTokenExpiresAt())
+    return null;
+  }
   return (
     <PageView>
       <View style={styles.topSpace}>
