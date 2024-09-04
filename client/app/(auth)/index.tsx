@@ -1,11 +1,17 @@
 import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
+import { useState } from "react";
 import { moderateScale, horizontalScale, verticalScale } from "@/utils/metrics";
 
 import PageView from "@/components/PageView";
 import Svg, { Path } from "react-native-svg";
 import { Link, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
+
+// utils
+import HomeLifeAsyncStorage from "@/utils/asyncStorage";
+
+// error
+import ErrorTopModal from "@/components/ErrorTopModal";
 
 // forms
 import { Form } from "@/components/forms/Form";
@@ -18,10 +24,12 @@ import GrpcGatewayClient from "@/utils/grpcClient";
 // validations
 import { validateEmail, validatePassword } from "@/validations/val";
 import { checkFieldsSet, FieldViolation } from "@/utils/converter";
-import HomeLifeAsyncStorage from "@/utils/asyncStorage";
+
+
 
 const AuthScreen = () => {
   const router = useRouter()
+  const [errorText, setErrorText] = useState("")
   async function onSubmit([email, password]: string[]): Promise<
     FieldViolation[] | null
   > {
@@ -33,6 +41,7 @@ const AuthScreen = () => {
       password
     );
     if (error) {
+      setErrorText("Error: " + error.message)
       return error.getFieldViolations();
     }
     await HomeLifeAsyncStorage.setData("access_token", response?.access_token)
@@ -46,6 +55,7 @@ const AuthScreen = () => {
   }
   return (
     <PageView>
+      <ErrorTopModal visible={!!errorText} setVisible={(v: boolean) => setErrorText("")} text={errorText}/>
       <View style={styles.topSpace}>
         <Text style={styles.topText}>Welcome to</Text>
         <Text style={styles.appTitle}>Home Life</Text>
