@@ -15,9 +15,20 @@ type ComponentT = {
 }
 
 const OpacityClickable = ({ text, buttonStyle, textStyle}: ComponentT) => {
-  const { submit, getValuesList, setError, clearErrors } = useForm()
+  const { optionalFields, submit, getValuesList, getKeyValuesList, setError, clearErrors } = useForm()
 
   async function submitAndHandleErrors() {
+    let areMissingFields = false
+    for (let [key, val] of getKeyValuesList()) {
+      console.log(key, optionalFields.some(v => v === key))
+      if (!optionalFields.some(v => v === key) && !val) {
+        setError(key, key+ " is required")
+        areMissingFields = true
+      }
+    }
+    console.log(areMissingFields)
+    if (areMissingFields) return
+
     const fieldViolations = await submit(getValuesList())
     if (!fieldViolations) return clearErrors()
     for (let fieldViolation of fieldViolations) {

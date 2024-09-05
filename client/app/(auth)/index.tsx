@@ -11,7 +11,7 @@ import { Colors } from "@/constants/Colors";
 import HomeLifeAsyncStorage from "@/utils/asyncStorage";
 
 // error
-import ErrorTopModal from "@/components/ErrorTopModal";
+import TopInfoModal from "@/components/TopInfoModal";
 
 // forms
 import { Form } from "@/components/forms/Form";
@@ -33,9 +33,6 @@ const AuthScreen = () => {
   async function onSubmit([email, password]: string[]): Promise<
     FieldViolation[] | null
   > {
-    const fieldsNotSet = checkFieldsSet([["email", email], ["password", password]])
-    if (fieldsNotSet.length > 0) return fieldsNotSet
-
     const [error, response] = await GrpcGatewayClient.loginUser(
       email,
       password
@@ -55,7 +52,7 @@ const AuthScreen = () => {
   }
   return (
     <PageView>
-      <ErrorTopModal visible={!!errorText} setVisible={(v: boolean) => setErrorText("")} text={errorText}/>
+      <TopInfoModal visible={!!errorText} setVisible={(v: boolean) => setErrorText("")} text={errorText} type="error"/>
       <View style={styles.topSpace}>
         <Text style={styles.topText}>Welcome to</Text>
         <Text style={styles.appTitle}>Home Life</Text>

@@ -5,24 +5,24 @@ import { Colors } from "@/constants/Colors";
 import { verticalScale } from "@/utils/metrics";
 import { useMovementAnimation } from "@/hooks/animate";
 
-type ErrorTopModalT = {
+type TopInfoModalT = {
   visible: boolean;
   text: string;
   setVisible: Dispatch<boolean>;
-  type?: "error" | "warning" | "success"
+  type: "error" | "warning" | "success"
 };
 
 const MOVEMENT_DURATION = 300;
 
-// TODO: set modal color corresponding to it's type
-function getColor(type: ErrorTopModalT["type"]) {
+function getColor(type: TopInfoModalT["type"]) {
   switch (type) {
     case "error": return Colors.red
-    // case "warning" return Colors.
+    case "warning": return Colors.yellow
+    case "success": return Colors.green
   }
 }
 
-const ErrorTopModal = ({ visible, setVisible, text }: ErrorTopModalT) => {
+const TopInfoModal = ({ visible, setVisible, text, type }: TopInfoModalT) => {
   const { movementAnim, moveSequence } = useMovementAnimation(
     -60,
     60,
@@ -41,7 +41,7 @@ const ErrorTopModal = ({ visible, setVisible, text }: ErrorTopModalT) => {
   if (!visible) return <></>;
   return (
     <Animated.View
-      style={[styles.container, { transform: [{ translateY: movementAnim }] }]}
+      style={[styles.container, { backgroundColor: getColor(type), transform: [{ translateY: movementAnim }] }]}
     >
       <Text style={styles.text}>{text}</Text>
     </Animated.View>
@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
     borderRadius: verticalScale(8)
   },
   text: {
-    color: Colors.white,
-    fontSize: verticalScale(20)
+    color: Colors.brightWhite,
+    fontSize: verticalScale(20),
   },
 });
 
-export default ErrorTopModal;
+export default TopInfoModal;
