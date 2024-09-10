@@ -23,13 +23,20 @@ import GrpcGatewayClient from "@/utils/grpcClient";
 
 // validations
 import { validateEmail, validatePassword } from "@/validations/val";
-import { checkFieldsSet, FieldViolation } from "@/utils/converter";
+import { FieldViolation } from "@/utils/converter";
+
+// redux
+import { setUser } from "@/redux/userSlice"
+import { useDispatch } from "react-redux";
 
 
 
 const AuthScreen = () => {
   const router = useRouter()
   const [errorText, setErrorText] = useState("")
+  const dispatch = useDispatch()
+
+
   async function onSubmit([email, password]: string[]): Promise<
     FieldViolation[] | null
   > {
@@ -46,6 +53,7 @@ const AuthScreen = () => {
     await HomeLifeAsyncStorage.setData("refresh_token", response?.refresh_token)
     await HomeLifeAsyncStorage.setData("refresh_token_expires_at", response?.refresh_token_expires_at)
     await HomeLifeAsyncStorage.setData("permissions_token", response?.permissions_token)
+    dispatch(setUser(response?.user))
 
     router.replace("/(auth)/getfamily")
     return null;

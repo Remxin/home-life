@@ -1,38 +1,92 @@
 import { View, Text, Image, StyleSheet } from "react-native";
 import React, { useEffect, useState } from "react";
-import PageView from "@/components/PageView";
+import { useRouter } from "expo-router";
+import GrpcGatewayClient from "@/utils/grpcClient";
+import HomeLifeAsyncStorage from "@/utils/asyncStorage";
+
 import { horizontalScale, verticalScale } from "@/utils/metrics";
 import { Colors } from "@/constants/Colors";
-import GrpcGatewayClient from "@/utils/grpcClient";
-import { useRouter } from "expo-router";
+import { validateFamilyName } from "@/validations/val";
 
+// components
+import PageView from "@/components/PageView";
 import SimpleButton from "@/components/SimpleButton";
+import TopInfoModal from "@/components/TopInfoModal";
+import Modal from "@/components/Modal";
 
+// forms
+import { Form } from "@/components/forms/Form";
+import Input from "@/components/forms/Input";
+import Button from "@/components/forms/Button";
+
+// redux
+import { useDispatch } from "react-redux";
+import { setFamily, setMembers } from "@/redux/familySlice";
 
 const GetFamily = () => {
-  const [loaded, setLoaded] = useState(false)
-  const router = useRouter()
+  const [loaded, setLoaded] = useState(false);
+  const [errorText, setErrorText] = useState("");
+  const [warningText, setWarningText] = useState("");
+  const [createFamilyVisible, setCreateFamilyVisible] = useState(false);
+  const router = useRouter();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     async function getFamily() {
-      const [error, response] = await GrpcGatewayClient.getFamily()
+      const [error, response] = await GrpcGatewayClient.getFamily();
       if (error) {
-        console.log(error)
-        // TODO: error handling
-        setLoaded(true)
-        return
+        setWarningText(error.message);
+        setLoaded(true);
+        return;
       }
-      console.log(response?.family)
-      router.replace(`/(tabs)/?family=${JSON.stringify(response?.family)}&members=${JSON.stringify(response?.members)}`)
 
+      dispatch(setFamily(response?.family));
+      dispatch(setMembers(response?.members));
+      router.replace("/(tabs)");
     }
-    getFamily()
-  }, [])
+    getFamily();
+  }, []);
 
-  if (!loaded) return (
-    <View><Text>Loading...</Text></View>
-  )
+  async function createFamily([family_name]: string[]) {
+    const [error, response] = await GrpcGatewayClient.createFamily(family_name);
+    if (error) {
+      setErrorText(error.message);
+      return error.getFieldViolations();
+    }
+
+    await HomeLifeAsyncStorage.setData(
+      "permissions_token",
+      response?.permission_token
+    );
+    router.replace(
+      `/(tabs)/?family=${JSON.stringify(
+        response?.family
+      )}&members=${JSON.stringify([])}`
+    );
+    setCreateFamilyVisible(false);
+    return null;
+  }
+
+  if (!loaded)
+    return (
+      <View>
+        <Text>Loading...</Text>
+      </View>
+    );
   return (
     <PageView>
+      <TopInfoModal
+        text={warningText}
+        type="warning"
+        visible={!!warningText}
+        setVisible={(v: boolean) => setWarningText("")}
+      />
+      <TopInfoModal
+        text={errorText}
+        type="error"
+        visible={!!errorText}
+        setVisible={(v: boolean) => setErrorText("")}
+      />
       <View style={styles.buttonsContainer}>
         <Text style={styles.title}>Get family</Text>
         <SimpleButton
@@ -43,7 +97,7 @@ const GetFamily = () => {
         />
         <SimpleButton
           text="Create family"
-          onPress={() => null}
+          onPress={() => setCreateFamilyVisible(true)}
           buttonStyle={styles.button}
           textStyle={styles.buttonText}
         />
@@ -55,6 +109,32 @@ const GetFamily = () => {
           style={styles.familyImage}
         />
       </View>
+      {/* <Modal>
+        <Text>Join family</Text>
+      </Modal> */}
+      <Modal
+        visible={createFamilyVisible}
+        setVisible={(v: any) => setCreateFamilyVisible(false)}
+      >
+        <View style={styles.modalHeader}>
+          <Text style={styles.modalTitle}>Create family</Text>
+        </View>
+        <View style={styles.modalForm}>
+          <Form values={["family_name"]} submit={createFamily}>
+            <Input
+              name="family_name"
+              placeholder="family name"
+              inputStyle={styles.input}
+              validationFunction={validateFamilyName}
+            />
+            <Button
+              text="create family"
+              buttonStyle={styles.modalButton}
+              textStyle={styles.buttonText}
+            />
+          </Form>
+        </View>
+      </Modal>
     </PageView>
   );
 };
@@ -96,6 +176,29 @@ const styles = StyleSheet.create({
     width: "100%",
     height: verticalScale(45),
     backgroundColor: Colors.white,
+  },
+  input: {
+    width: horizontalScale(240),
+    height: horizontalScale(40),
+    backgroundColor: Colors.lightGray,
+  },
+  modalTitle: {
+    fontSize: horizontalScale(28),
+  },
+  modalButton: {
+    width: horizontalScale(200),
+    height: horizontalScale(40),
+  },
+  modalHeader: {
+    alignItems: "center",
+    justifyContent: "center",
+    flex: 1,
+  },
+  modalForm: {
+    flex: 2,
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 15,
   },
 });
 

@@ -53,15 +53,3 @@ export function MissingHeadersError(): HomeLifeRpcError {
 
   return rpcError
 }
-
-export function checkFieldsSet(fieldsArr: [string, string][]): FieldViolation[] {
-    const violations = [] as FieldViolation[]
-    for (let field of fieldsArr) {
-        if (field[1]) continue
-        violations.push({
-            field: field[0],
-            description: `${field[0]} is required`
-        })
-    }
-    return violations
-}

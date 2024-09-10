@@ -50,7 +50,7 @@ func (server *Server) CreateFamily(ctx context.Context, req *pb.CreateFamilyRequ
 
 func validateCreateFamilyRequest(req *pb.CreateFamilyRequest) (violations []*errdetails.BadRequest_FieldViolation) {
 	if err := val.ValidateString(req.FamilyName, 3, 40); err != nil {
-		violations = append(violations, fieldViolation("name", err))
+		violations = append(violations, fieldViolation("family_name", err))
 	}
 
 	return violations

@@ -20,13 +20,11 @@ const OpacityClickable = ({ text, buttonStyle, textStyle}: ComponentT) => {
   async function submitAndHandleErrors() {
     let areMissingFields = false
     for (let [key, val] of getKeyValuesList()) {
-      console.log(key, optionalFields.some(v => v === key))
       if (!optionalFields.some(v => v === key) && !val) {
         setError(key, key+ " is required")
         areMissingFields = true
       }
     }
-    console.log(areMissingFields)
     if (areMissingFields) return
 
     const fieldViolations = await submit(getValuesList())
