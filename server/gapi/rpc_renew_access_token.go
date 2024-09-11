@@ -56,6 +56,7 @@ func (server *Server) RenewAccessToken(ctx context.Context, req *emptypb.Empty) 
 		RefreshToken: refreshToken,
 		ExpiresAt:    refreshTokenPayload.ExpiredAt,
 		ID:           previousTokenPayload.ID,
+		NewID:        refreshTokenPayload.ID,
 	})
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to update user session: %s", err)
@@ -65,7 +66,7 @@ func (server *Server) RenewAccessToken(ctx context.Context, req *emptypb.Empty) 
 		SessiondId:            session.ID.String(),
 		AccessToken:           accessToken,
 		AccessTokenExpiresAt:  timestamppb.New(accessTokenPayload.ExpiredAt),
-		RefreshToken:          refreshToken,
+		RefreshToken:          session.RefreshToken,
 		RefreshTokenExpiresAt: timestamppb.New(refreshTokenPayload.ExpiredAt),
 		PermissionToken:       nil,
 	}

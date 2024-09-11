@@ -93,7 +93,6 @@ func (server *Server) getRefreshToken(ctx context.Context) (*token.Payload, erro
 	if !ok {
 		return nil, fmt.Errorf("could not get request from context")
 	}
-
 	refresh_token := md[refresh_token]
 	if len(refresh_token) == 0 {
 		return nil, fmt.Errorf("refresh token not found")

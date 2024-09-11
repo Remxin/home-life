@@ -28,13 +28,15 @@ import { FieldViolation } from "@/utils/converter";
 // redux
 import { setUser } from "@/redux/userSlice"
 import { useDispatch } from "react-redux";
+import { useAuth } from "@/hooks/useAuth";
 
 
 
 const AuthScreen = () => {
   const router = useRouter()
-  const [errorText, setErrorText] = useState("")
   const dispatch = useDispatch()
+  const [errorText, setErrorText] = useState("")
+  useAuth({ errorTextSetter: setErrorText})
 
 
   async function onSubmit([email, password]: string[]): Promise<
@@ -48,12 +50,12 @@ const AuthScreen = () => {
       setErrorText("Error: " + error.message)
       return error.getFieldViolations();
     }
-    await HomeLifeAsyncStorage.setData("access_token", response?.access_token)
-    await HomeLifeAsyncStorage.setData("access_token_expires_at", response?.access_token_expires_at)
-    await HomeLifeAsyncStorage.setData("refresh_token", response?.refresh_token)
-    await HomeLifeAsyncStorage.setData("refresh_token_expires_at", response?.refresh_token_expires_at)
-    await HomeLifeAsyncStorage.setData("permission_token", response?.permissions_token)
-    dispatch(setUser(response?.user))
+    await HomeLifeAsyncStorage.setData("access_token", response.access_token)
+    await HomeLifeAsyncStorage.setData("access_token_expires_at", response.access_token_expires_at)
+    await HomeLifeAsyncStorage.setData("refresh_token", response.refresh_token)
+    await HomeLifeAsyncStorage.setData("refresh_token_expires_at", response.refresh_token_expires_at)
+    await HomeLifeAsyncStorage.setData("permission_token", response.permissions_token)
+    dispatch(setUser(response.user))
 
     router.replace("/(auth)/getfamily")
     return null;

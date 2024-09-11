@@ -153,13 +153,12 @@ func runTaskProcessor(config utils.Config, redisOpt asynq.RedisClientOpt, store 
 }
 
 func customHeaderMatcher(key string) (string, bool) {
-	// Convert the header key to lowercase for consistent matching
 	lowerKey := strings.ToLower(key)
 
 	switch lowerKey {
-	case "authorization", "permission_token":
-		return key, true // Forward the "authorization" and "permission_token" headers
+	case "authorization", "permission_token", "refresh_token":
+		return key, true
 	default:
-		return runtime.DefaultHeaderMatcher(key) // Default behavior for other headers
+		return runtime.DefaultHeaderMatcher(key)
 	}
 }

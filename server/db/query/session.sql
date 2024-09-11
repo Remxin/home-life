@@ -29,6 +29,7 @@ LIMIT 1;
 -- name: UpdateUserSession :one
 UPDATE "sessions"
 SET 
+    id = @new_id,
     refresh_token = @refresh_token,
     expires_at = @expires_at
 WHERE id = @id

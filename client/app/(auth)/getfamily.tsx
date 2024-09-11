@@ -25,7 +25,7 @@ import { setFamily, setMembers } from "@/redux/familySlice";
 import { useStoreSelector } from "@/redux/store";
 
 const GetFamily = () => {
-  const user = useStoreSelector(state => state.user)
+  const user = useStoreSelector((state) => state.user);
   const [loaded, setLoaded] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [warningText, setWarningText] = useState("");
@@ -60,14 +60,11 @@ const GetFamily = () => {
       "permission_token",
       response?.permission_token
     );
-    dispatch(setFamily(response?.family))
-    dispatch(setMembers([user]))
-    router.replace(
-      `/(tabs)/?family=${JSON.stringify(
-        response?.family
-      )}&members=${JSON.stringify([])}`
-    );
+    dispatch(setFamily(response?.family));
+    dispatch(setMembers([user]));
     setCreateFamilyVisible(false);
+    
+    router.replace(`/(tabs)/`);
     return null;
   }
 

@@ -166,20 +166,27 @@ func (q *Queries) GetUserSessionsCount(ctx context.Context, userID uuid.UUID) (i
 const updateUserSession = `-- name: UpdateUserSession :one
 UPDATE "sessions"
 SET 
-    refresh_token = $1,
-    expires_at = $2
-WHERE id = $3
+    id = $1,
+    refresh_token = $2,
+    expires_at = $3
+WHERE id = $4
 RETURNING id, user_id, refresh_token, user_agent, client_ip, is_blocked, expires_at, created_at
 `
 
 type UpdateUserSessionParams struct {
+	NewID        uuid.UUID `json:"new_id"`
 	RefreshToken string    `json:"refresh_token"`
 	ExpiresAt    time.Time `json:"expires_at"`
 	ID           uuid.UUID `json:"id"`
 }
 
 func (q *Queries) UpdateUserSession(ctx context.Context, arg UpdateUserSessionParams) (Session, error) {
-	row := q.db.QueryRowContext(ctx, updateUserSession, arg.RefreshToken, arg.ExpiresAt, arg.ID)
+	row := q.db.QueryRowContext(ctx, updateUserSession,
+		arg.NewID,
+		arg.RefreshToken,
+		arg.ExpiresAt,
+		arg.ID,
+	)
 	var i Session
 	err := row.Scan(
 		&i.ID,

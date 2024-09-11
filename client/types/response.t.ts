@@ -19,3 +19,12 @@ export type CreateFamilyResponse = {
     family: Family,
     permission_token: string
 }
+
+export type RenewAccessTokenResponse = {
+    sessiond_id: string
+    access_token: string
+    refresh_token: string
+    access_token_expires_at: string
+    refresh_token_expires_at: string
+    permission_token: string
+}
