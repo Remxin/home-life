@@ -1,7 +1,14 @@
 import { User } from "@/types/db.t";
 import { createSlice } from "@reduxjs/toolkit";
 
-const initialState = {} as User
+const initialState = {
+    id: "",
+    full_name: "",
+    email: "",
+    is_verified: false,
+    password_changed_at: "",
+    created_at: ""
+} as User
 
 const userSlice = createSlice({
     name: "user",

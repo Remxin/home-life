@@ -52,7 +52,7 @@ const AuthScreen = () => {
     await HomeLifeAsyncStorage.setData("access_token_expires_at", response?.access_token_expires_at)
     await HomeLifeAsyncStorage.setData("refresh_token", response?.refresh_token)
     await HomeLifeAsyncStorage.setData("refresh_token_expires_at", response?.refresh_token_expires_at)
-    await HomeLifeAsyncStorage.setData("permissions_token", response?.permissions_token)
+    await HomeLifeAsyncStorage.setData("permission_token", response?.permissions_token)
     dispatch(setUser(response?.user))
 
     router.replace("/(auth)/getfamily")

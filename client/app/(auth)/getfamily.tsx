@@ -22,8 +22,10 @@ import Button from "@/components/forms/Button";
 // redux
 import { useDispatch } from "react-redux";
 import { setFamily, setMembers } from "@/redux/familySlice";
+import { useStoreSelector } from "@/redux/store";
 
 const GetFamily = () => {
+  const user = useStoreSelector(state => state.user)
   const [loaded, setLoaded] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [warningText, setWarningText] = useState("");
@@ -55,9 +57,11 @@ const GetFamily = () => {
     }
 
     await HomeLifeAsyncStorage.setData(
-      "permissions_token",
+      "permission_token",
       response?.permission_token
     );
+    dispatch(setFamily(response?.family))
+    dispatch(setMembers([user]))
     router.replace(
       `/(tabs)/?family=${JSON.stringify(
         response?.family
