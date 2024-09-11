@@ -1,9 +1,11 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class HomeLifeAsyncStorage {
-  static keys = ["access_token", "refresh_token", "permission_token", "access_token_expires_at", "refresh_token_expires_at"] as const
+export const asyncStorageKeys = ["access_token", "refresh_token", "permission_token", "access_token_expires_at", "refresh_token_expires_at"] as const
+export type AsyncStorageKeys = typeof asyncStorageKeys[number]
 
-  static async getData(key: typeof HomeLifeAsyncStorage.keys[number]): Promise<string> {
+class HomeLifeAsyncStorage {
+
+  static async getData(key: AsyncStorageKeys): Promise<string> {
      try {
         const value = await AsyncStorage.getItem(key);
         if (value !== null) {
@@ -15,7 +17,7 @@ class HomeLifeAsyncStorage {
       }
   }
 
-  static async setData(key: typeof HomeLifeAsyncStorage.keys[number], value: string | undefined): Promise<string> {
+  static async setData(key: AsyncStorageKeys, value: string | undefined): Promise<string> {
     try {
       if (!value) {
         await AsyncStorage.setItem(key, "")
@@ -28,7 +30,7 @@ class HomeLifeAsyncStorage {
     }
   }
   static async clearData() {
-    for (let key of HomeLifeAsyncStorage.keys) {
+    for (let key of asyncStorageKeys) {
       try {
         await AsyncStorage.removeItem(key);
       } catch (e) {

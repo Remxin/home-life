@@ -8,6 +8,7 @@ interface ObjT {
 type ContextT = {
     errors: {[key: string]: string}
     getValuesList: () => string[]
+    getKeyValuesList: () => [string, string][]
     submit: (args: string[]) => Promise<
     FieldViolation[] | null>
     getValue: (key: string) => string
@@ -15,6 +16,7 @@ type ContextT = {
     getError: (key: string) => string
     setError: (key: string, newVal: string) => void
     clearErrors: () => void
+    optionalFields: string[],
    
 }
 
@@ -22,8 +24,8 @@ type FormT = {
     children: React.ReactNode | React.ReactNode[]
     values: string[],
     submit: (args: string[]) => Promise<
-    FieldViolation[] | null
-  >
+    FieldViolation[] | null>
+    optionalFields?: string[]
 }
 
 function createDataFromArray(arr: string[]) {
@@ -37,12 +39,16 @@ function createDataFromArray(arr: string[]) {
 
 const FormContext = createContext<null | ContextT>(null)
 
-export const Form = ({ children, values, submit }: FormT) => {
+export const Form = ({ children, values, submit, optionalFields = [] }: FormT) => {
     const [data, setData] = useState<ObjT>(createDataFromArray(values))
     const [errors, setErrors] = useState<ObjT>(createDataFromArray(values))
 
     function getValuesList(): string[] {
         return Object.values(data)
+    }
+
+    function getKeyValuesList(): [string, string][] {
+        return Object.entries(data)
     }
 
     function getValue(key: string) {
@@ -74,7 +80,7 @@ export const Form = ({ children, values, submit }: FormT) => {
     }
 
     return (
-        <FormContext.Provider value={{ errors, getValuesList, getValue, setValue, getError, setError, submit, clearErrors }}>
+        <FormContext.Provider value={{ errors, getValuesList, getKeyValuesList, optionalFields, getValue, setValue, getError, setError, submit, clearErrors }}>
             {children}
         </FormContext.Provider>
     )

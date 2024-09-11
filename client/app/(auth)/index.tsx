@@ -1,11 +1,17 @@
 import { View, Text, Image, StyleSheet } from "react-native";
-import React from "react";
+import { useState } from "react";
 import { moderateScale, horizontalScale, verticalScale } from "@/utils/metrics";
 
 import PageView from "@/components/PageView";
 import Svg, { Path } from "react-native-svg";
 import { Link, useRouter } from "expo-router";
 import { Colors } from "@/constants/Colors";
+
+// utils
+import HomeLifeAsyncStorage from "@/utils/asyncStorage";
+
+// error
+import TopInfoModal from "@/components/TopInfoModal";
 
 // forms
 import { Form } from "@/components/forms/Form";
@@ -17,34 +23,46 @@ import GrpcGatewayClient from "@/utils/grpcClient";
 
 // validations
 import { validateEmail, validatePassword } from "@/validations/val";
-import { checkFieldsSet, FieldViolation } from "@/utils/converter";
-import HomeLifeAsyncStorage from "@/utils/asyncStorage";
+import { FieldViolation } from "@/utils/converter";
+
+// redux
+import { setUser } from "@/redux/userSlice"
+import { useDispatch } from "react-redux";
+import { useAuth } from "@/hooks/useAuth";
+
+
 
 const AuthScreen = () => {
   const router = useRouter()
+  const dispatch = useDispatch()
+  const [errorText, setErrorText] = useState("")
+  useAuth({ errorTextSetter: setErrorText})
+
+
   async function onSubmit([email, password]: string[]): Promise<
     FieldViolation[] | null
   > {
-    const fieldsNotSet = checkFieldsSet([["email", email], ["password", password]])
-    if (fieldsNotSet.length > 0) return fieldsNotSet
-
     const [error, response] = await GrpcGatewayClient.loginUser(
       email,
       password
     );
     if (error) {
+      setErrorText("Error: " + error.message)
       return error.getFieldViolations();
     }
-    HomeLifeAsyncStorage.setData("access_token", response?.getAccessToken())
-    HomeLifeAsyncStorage.setData("access_token_expires_at", response?.getAccessTokenExpiresAt())
-    HomeLifeAsyncStorage.setData("refresh_token", response?.getRefreshToken())
-    HomeLifeAsyncStorage.setData("refresh_token_expires_at", response?.getRefreshTokenExpiresAt())
-    HomeLifeAsyncStorage.setData("permission_token", response?.getPermissionsToken())
+    await HomeLifeAsyncStorage.setData("access_token", response.access_token)
+    await HomeLifeAsyncStorage.setData("access_token_expires_at", response.access_token_expires_at)
+    await HomeLifeAsyncStorage.setData("refresh_token", response.refresh_token)
+    await HomeLifeAsyncStorage.setData("refresh_token_expires_at", response.refresh_token_expires_at)
+    await HomeLifeAsyncStorage.setData("permission_token", response.permissions_token)
+    dispatch(setUser(response.user))
+
     router.replace("/(auth)/getfamily")
     return null;
   }
   return (
     <PageView>
+      <TopInfoModal visible={!!errorText} setVisible={(v: boolean) => setErrorText("")} text={errorText} type="error"/>
       <View style={styles.topSpace}>
         <Text style={styles.topText}>Welcome to</Text>
         <Text style={styles.appTitle}>Home Life</Text>
