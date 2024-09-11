@@ -41,7 +41,6 @@ class GrpcGatewayClient {
           headers["authorization"] = `bearer ${headerValue}`;
         else headers[newHeader] = headerValue;
       }
-      console.log(headers)
       const requestParams: RequestInit = {
         method,
         headers,
