@@ -1,6 +1,6 @@
 export type User = {
     id: string
-    full_name: string
+    name: string
     email: string
     is_verified: boolean
     password_changed_at: string
