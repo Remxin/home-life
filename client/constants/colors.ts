@@ -18,5 +18,8 @@ export const Colors = {
   lightGray: "#ddddee",
   red: "#da1e28",
   yellow: "#f1c21b",
-  green: "#198038"
-};
+  green: "#198038",
+  darkGray: "#444444"
+} as const;
+
+export type ColorsT = keyof typeof Colors
