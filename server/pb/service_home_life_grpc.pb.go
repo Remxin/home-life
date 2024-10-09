@@ -20,22 +20,24 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	HomeLife_CreateUser_FullMethodName       = "/pb.HomeLife/CreateUser"
-	HomeLife_VerifyUser_FullMethodName       = "/pb.HomeLife/VerifyUser"
-	HomeLife_LoginUser_FullMethodName        = "/pb.HomeLife/LoginUser"
-	HomeLife_CreateFamily_FullMethodName     = "/pb.HomeLife/CreateFamily"
-	HomeLife_GetFamily_FullMethodName        = "/pb.HomeLife/GetFamily"
-	HomeLife_AddUserToFamily_FullMethodName  = "/pb.HomeLife/AddUserToFamily"
-	HomeLife_AddTask_FullMethodName          = "/pb.HomeLife/AddTask"
-	HomeLife_MarkTaskAsDone_FullMethodName   = "/pb.HomeLife/MarkTaskAsDone"
-	HomeLife_DeleteTask_FullMethodName       = "/pb.HomeLife/DeleteTask"
-	HomeLife_AssignTask_FullMethodName       = "/pb.HomeLife/AssignTask"
-	HomeLife_GetTasks_FullMethodName         = "/pb.HomeLife/GetTasks"
-	HomeLife_CreateRecipe_FullMethodName     = "/pb.HomeLife/CreateRecipe"
-	HomeLife_UpdateRecipe_FullMethodName     = "/pb.HomeLife/UpdateRecipe"
-	HomeLife_GetRecipes_FullMethodName       = "/pb.HomeLife/GetRecipes"
-	HomeLife_DeleteRecipe_FullMethodName     = "/pb.HomeLife/DeleteRecipe"
-	HomeLife_RenewAccessToken_FullMethodName = "/pb.HomeLife/RenewAccessToken"
+	HomeLife_CreateUser_FullMethodName         = "/pb.HomeLife/CreateUser"
+	HomeLife_VerifyUser_FullMethodName         = "/pb.HomeLife/VerifyUser"
+	HomeLife_LoginUser_FullMethodName          = "/pb.HomeLife/LoginUser"
+	HomeLife_CreateFamily_FullMethodName       = "/pb.HomeLife/CreateFamily"
+	HomeLife_GetFamily_FullMethodName          = "/pb.HomeLife/GetFamily"
+	HomeLife_GetUsersByEmail_FullMethodName    = "/pb.HomeLife/GetUsersByEmail"
+	HomeLife_InviteUserToFamily_FullMethodName = "/pb.HomeLife/InviteUserToFamily"
+	HomeLife_JoinFamily_FullMethodName         = "/pb.HomeLife/JoinFamily"
+	HomeLife_AddTask_FullMethodName            = "/pb.HomeLife/AddTask"
+	HomeLife_MarkTaskAsDone_FullMethodName     = "/pb.HomeLife/MarkTaskAsDone"
+	HomeLife_DeleteTask_FullMethodName         = "/pb.HomeLife/DeleteTask"
+	HomeLife_AssignTask_FullMethodName         = "/pb.HomeLife/AssignTask"
+	HomeLife_GetTasks_FullMethodName           = "/pb.HomeLife/GetTasks"
+	HomeLife_CreateRecipe_FullMethodName       = "/pb.HomeLife/CreateRecipe"
+	HomeLife_UpdateRecipe_FullMethodName       = "/pb.HomeLife/UpdateRecipe"
+	HomeLife_GetRecipes_FullMethodName         = "/pb.HomeLife/GetRecipes"
+	HomeLife_DeleteRecipe_FullMethodName       = "/pb.HomeLife/DeleteRecipe"
+	HomeLife_RenewAccessToken_FullMethodName   = "/pb.HomeLife/RenewAccessToken"
 )
 
 // HomeLifeClient is the client API for HomeLife service.
@@ -47,7 +49,9 @@ type HomeLifeClient interface {
 	LoginUser(ctx context.Context, in *LoginUserRequest, opts ...grpc.CallOption) (*LoginUserResponse, error)
 	CreateFamily(ctx context.Context, in *CreateFamilyRequest, opts ...grpc.CallOption) (*CreateFamilyResponse, error)
 	GetFamily(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*GetFamilyResponse, error)
-	AddUserToFamily(ctx context.Context, in *AddUserToFamilyRequest, opts ...grpc.CallOption) (*AddUserToFamilyResponse, error)
+	GetUsersByEmail(ctx context.Context, in *GetUsersByEmailRequest, opts ...grpc.CallOption) (*GetUsersByEmailResponse, error)
+	InviteUserToFamily(ctx context.Context, in *InviteUserToFamilyRequest, opts ...grpc.CallOption) (*InviteUserToFamilyResponse, error)
+	JoinFamily(ctx context.Context, in *JoinFamilyRequest, opts ...grpc.CallOption) (*JoinFamilyResponse, error)
 	AddTask(ctx context.Context, in *AddTaskRequest, opts ...grpc.CallOption) (*AddTaskResponse, error)
 	MarkTaskAsDone(ctx context.Context, in *MarkTaskAsDoneRequest, opts ...grpc.CallOption) (*MarkTaskAsDoneResponse, error)
 	DeleteTask(ctx context.Context, in *DeleteTaskRequest, opts ...grpc.CallOption) (*DeleteTaskResponse, error)
@@ -118,10 +122,30 @@ func (c *homeLifeClient) GetFamily(ctx context.Context, in *emptypb.Empty, opts 
 	return out, nil
 }
 
-func (c *homeLifeClient) AddUserToFamily(ctx context.Context, in *AddUserToFamilyRequest, opts ...grpc.CallOption) (*AddUserToFamilyResponse, error) {
+func (c *homeLifeClient) GetUsersByEmail(ctx context.Context, in *GetUsersByEmailRequest, opts ...grpc.CallOption) (*GetUsersByEmailResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(AddUserToFamilyResponse)
-	err := c.cc.Invoke(ctx, HomeLife_AddUserToFamily_FullMethodName, in, out, cOpts...)
+	out := new(GetUsersByEmailResponse)
+	err := c.cc.Invoke(ctx, HomeLife_GetUsersByEmail_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) InviteUserToFamily(ctx context.Context, in *InviteUserToFamilyRequest, opts ...grpc.CallOption) (*InviteUserToFamilyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(InviteUserToFamilyResponse)
+	err := c.cc.Invoke(ctx, HomeLife_InviteUserToFamily_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *homeLifeClient) JoinFamily(ctx context.Context, in *JoinFamilyRequest, opts ...grpc.CallOption) (*JoinFamilyResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(JoinFamilyResponse)
+	err := c.cc.Invoke(ctx, HomeLife_JoinFamily_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -237,7 +261,9 @@ type HomeLifeServer interface {
 	LoginUser(context.Context, *LoginUserRequest) (*LoginUserResponse, error)
 	CreateFamily(context.Context, *CreateFamilyRequest) (*CreateFamilyResponse, error)
 	GetFamily(context.Context, *emptypb.Empty) (*GetFamilyResponse, error)
-	AddUserToFamily(context.Context, *AddUserToFamilyRequest) (*AddUserToFamilyResponse, error)
+	GetUsersByEmail(context.Context, *GetUsersByEmailRequest) (*GetUsersByEmailResponse, error)
+	InviteUserToFamily(context.Context, *InviteUserToFamilyRequest) (*InviteUserToFamilyResponse, error)
+	JoinFamily(context.Context, *JoinFamilyRequest) (*JoinFamilyResponse, error)
 	AddTask(context.Context, *AddTaskRequest) (*AddTaskResponse, error)
 	MarkTaskAsDone(context.Context, *MarkTaskAsDoneRequest) (*MarkTaskAsDoneResponse, error)
 	DeleteTask(context.Context, *DeleteTaskRequest) (*DeleteTaskResponse, error)
@@ -270,8 +296,14 @@ func (UnimplementedHomeLifeServer) CreateFamily(context.Context, *CreateFamilyRe
 func (UnimplementedHomeLifeServer) GetFamily(context.Context, *emptypb.Empty) (*GetFamilyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetFamily not implemented")
 }
-func (UnimplementedHomeLifeServer) AddUserToFamily(context.Context, *AddUserToFamilyRequest) (*AddUserToFamilyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddUserToFamily not implemented")
+func (UnimplementedHomeLifeServer) GetUsersByEmail(context.Context, *GetUsersByEmailRequest) (*GetUsersByEmailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUsersByEmail not implemented")
+}
+func (UnimplementedHomeLifeServer) InviteUserToFamily(context.Context, *InviteUserToFamilyRequest) (*InviteUserToFamilyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InviteUserToFamily not implemented")
+}
+func (UnimplementedHomeLifeServer) JoinFamily(context.Context, *JoinFamilyRequest) (*JoinFamilyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method JoinFamily not implemented")
 }
 func (UnimplementedHomeLifeServer) AddTask(context.Context, *AddTaskRequest) (*AddTaskResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddTask not implemented")
@@ -406,20 +438,56 @@ func _HomeLife_GetFamily_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HomeLife_AddUserToFamily_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddUserToFamilyRequest)
+func _HomeLife_GetUsersByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUsersByEmailRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HomeLifeServer).AddUserToFamily(ctx, in)
+		return srv.(HomeLifeServer).GetUsersByEmail(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: HomeLife_AddUserToFamily_FullMethodName,
+		FullMethod: HomeLife_GetUsersByEmail_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HomeLifeServer).AddUserToFamily(ctx, req.(*AddUserToFamilyRequest))
+		return srv.(HomeLifeServer).GetUsersByEmail(ctx, req.(*GetUsersByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_InviteUserToFamily_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InviteUserToFamilyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).InviteUserToFamily(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_InviteUserToFamily_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).InviteUserToFamily(ctx, req.(*InviteUserToFamilyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _HomeLife_JoinFamily_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(JoinFamilyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(HomeLifeServer).JoinFamily(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: HomeLife_JoinFamily_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(HomeLifeServer).JoinFamily(ctx, req.(*JoinFamilyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -632,8 +700,16 @@ var HomeLife_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HomeLife_GetFamily_Handler,
 		},
 		{
-			MethodName: "AddUserToFamily",
-			Handler:    _HomeLife_AddUserToFamily_Handler,
+			MethodName: "GetUsersByEmail",
+			Handler:    _HomeLife_GetUsersByEmail_Handler,
+		},
+		{
+			MethodName: "InviteUserToFamily",
+			Handler:    _HomeLife_InviteUserToFamily_Handler,
+		},
+		{
+			MethodName: "JoinFamily",
+			Handler:    _HomeLife_JoinFamily_Handler,
 		},
 		{
 			MethodName: "AddTask",

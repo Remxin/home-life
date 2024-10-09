@@ -1,0 +1,15 @@
+syntax = "proto3";
+package pb;
+
+import "user.proto";
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message GetUsersByEmailRequest {
+    string email = 1;
+    
+}
+
+message GetUsersByEmailResponse {
+    repeated User users = 1;
+}

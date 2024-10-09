@@ -111,16 +111,16 @@
         ]
       }
     },
-    "/v1/family/add_user": {
+    "/v1/family/invite_user": {
       "post": {
-        "summary": "Add user to a family",
-        "description": "Use this API to add user to a family",
-        "operationId": "HomeLife_AddUserToFamily",
+        "summary": "Invite user to a family",
+        "description": "Use this API to invite user to a family",
+        "operationId": "HomeLife_InviteUserToFamily",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/pbAddUserToFamilyResponse"
+              "$ref": "#/definitions/pbInviteUserToFamilyResponse"
             }
           },
           "default": {
@@ -136,8 +136,46 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/pbAddUserToFamilyRequest"
+              "$ref": "#/definitions/pbInviteUserToFamilyRequest"
             }
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
+    "/v1/join_family": {
+      "get": {
+        "summary": "Join a family",
+        "description": "Use this API to join family",
+        "operationId": "HomeLife_JoinFamily",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbJoinFamilyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "code",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -498,6 +536,38 @@
         ]
       }
     },
+    "/v1/user": {
+      "get": {
+        "summary": "Invite user to a family",
+        "description": "Use this API to invite user to a family",
+        "operationId": "HomeLife_GetUsersByEmail",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/pbGetUsersByEmailResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HomeLife"
+        ]
+      }
+    },
     "/v1/user/renew_token": {
       "post": {
         "summary": "Renew users access token",
@@ -585,34 +655,6 @@
       "properties": {
         "task": {
           "$ref": "#/definitions/pbTask"
-        }
-      }
-    },
-    "pbAddUserToFamilyRequest": {
-      "type": "object",
-      "properties": {
-        "userId": {
-          "type": "string"
-        },
-        "canRead": {
-          "type": "boolean"
-        },
-        "canEdit": {
-          "type": "boolean"
-        },
-        "canCreate": {
-          "type": "boolean"
-        },
-        "canModify": {
-          "type": "boolean"
-        }
-      }
-    },
-    "pbAddUserToFamilyResponse": {
-      "type": "object",
-      "properties": {
-        "permissions": {
-          "$ref": "#/definitions/pbPermissions"
         }
       }
     },
@@ -780,6 +822,54 @@
         }
       }
     },
+    "pbGetUsersByEmailResponse": {
+      "type": "object",
+      "properties": {
+        "users": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/pbUser"
+          }
+        }
+      }
+    },
+    "pbInviteUserToFamilyRequest": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "canRead": {
+          "type": "boolean"
+        },
+        "canEdit": {
+          "type": "boolean"
+        },
+        "canCreate": {
+          "type": "boolean"
+        },
+        "canModify": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pbInviteUserToFamilyResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
+    "pbJoinFamilyResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        }
+      }
+    },
     "pbLoginUserRequest": {
       "type": "object",
       "properties": {
@@ -832,29 +922,6 @@
       "properties": {
         "task": {
           "$ref": "#/definitions/pbTask"
-        }
-      }
-    },
-    "pbPermissions": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string"
-        },
-        "familyId": {
-          "type": "string"
-        },
-        "canRead": {
-          "type": "boolean"
-        },
-        "canEdit": {
-          "type": "boolean"
-        },
-        "canCreate": {
-          "type": "boolean"
-        },
-        "canModify": {
-          "type": "boolean"
         }
       }
     },
