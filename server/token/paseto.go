@@ -80,3 +80,27 @@ func (maker *PasetoMaker) VerifyPermissionToken(token string) (*PermissionPayloa
 	}
 	return payload, nil
 }
+
+func (maker *PasetoMaker) CreateFamilyInvitationToken(user_id string, family_id string, can_read bool, can_create bool, can_edit bool, can_modify bool, duration time.Duration) (string, *FamilyInvitationPayload, error) {
+	payload := NewFamilyInvitationPayload(user_id, family_id, can_read, can_create, can_edit, can_modify, duration)
+	token, err := paseto.NewV2().Encrypt(maker.symetricKey, payload, nil)
+	if err != nil {
+		return "", nil, err
+	}
+
+	return token, payload, nil
+}
+
+func (maker *PasetoMaker) VerifyFamilyInvitationToken(token string) (*FamilyInvitationPayload, error) {
+	payload := &FamilyInvitationPayload{}
+	err := paseto.NewV2().Decrypt(token, maker.symetricKey, payload, nil)
+	if err != nil {
+		return nil, err
+	}
+	err = payload.Valid()
+	if err != nil {
+		return nil, err
+	}
+
+	return payload, nil
+}

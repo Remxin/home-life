@@ -32,6 +32,8 @@ type Querier interface {
 	GetUserByEmail(ctx context.Context, email string) (User, error)
 	GetUserById(ctx context.Context, id uuid.UUID) (User, error)
 	GetUserSessionsCount(ctx context.Context, userID uuid.UUID) (int64, error)
+	GetUserWithPermissions(ctx context.Context, id uuid.UUID) (GetUserWithPermissionsRow, error)
+	GetUsersByEmail(ctx context.Context, arg GetUsersByEmailParams) ([]User, error)
 	MarkTaskAsDone(ctx context.Context, arg MarkTaskAsDoneParams) (Task, error)
 	UpdateRecipe(ctx context.Context, arg UpdateRecipeParams) (Recipe, error)
 	UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error)

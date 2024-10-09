@@ -1,0 +1,14 @@
+syntax = "proto3";
+package pb;
+
+option go_package = "github.com/Remxin/home-life/server/pb";
+
+message JoinFamilyRequest {
+    string user_id = 1;
+    string code = 2;
+    
+}
+
+message JoinFamilyResponse {
+    bool success = 1;
+}

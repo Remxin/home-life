@@ -9,7 +9,9 @@ import "rpc_verify_user.proto";
 import "rpc_login_user.proto";
 import "rpc_create_family.proto";
 import "rpc_get_family.proto";
-import "rpc_add_user_to_family.proto";
+import "rpc_get_users_by_email.proto";
+import "rpc_invite_user_to_family.proto";
+import "rpc_join_family.proto";
 import "rpc_add_task.proto";
 import "rpc_assign_task.proto";
 import "rpc_mark_task_as_done.proto";
@@ -94,14 +96,34 @@ service HomeLife {
         };
     }
 
-    rpc AddUserToFamily (AddUserToFamilyRequest) returns (AddUserToFamilyResponse) {
+    rpc GetUsersByEmail (GetUsersByEmailRequest) returns (GetUsersByEmailResponse) {
         option (google.api.http) = {
-            post: "/v1/family/add_user"
+            get: "/v1/user"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to invite user to a family";
+            summary: "Invite user to a family"
+        };
+    }
+
+    rpc InviteUserToFamily (InviteUserToFamilyRequest) returns (InviteUserToFamilyResponse) {
+        option (google.api.http) = {
+            post: "/v1/family/invite_user"
             body: "*"
         };
         option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-            description: "Use this API to add user to a family";
-            summary: "Add user to a family"
+            description: "Use this API to invite user to a family";
+            summary: "Invite user to a family"
+        };
+    }
+
+    rpc JoinFamily (JoinFamilyRequest) returns (JoinFamilyResponse) {
+        option (google.api.http) = {
+            get: "/v1/join_family"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            description: "Use this API to join family";
+            summary: "Join a family"
         };
     }
 

@@ -19,6 +19,22 @@ WHERE id = @id LIMIT 1;
 SELECT * FROM "users"
 WHERE email = @email LIMIT 1;
 
+-- name: GetUsersByEmail :many
+SELECT u.* FROM "users" u
+LEFT JOIN permissions p ON p.id = u.id
+WHERE
+    u.is_verified = TRUE
+    AND u.email LIKE '%' || @email || '%'
+    AND (@no_family IS FALSE OR p.family_id IS NULL)
+LIMIT 8;
+
+
+-- name: GetUserWithPermissions :one
+SELECT u.id, u.full_name, u.email, u.is_verified, p.* FROM "users" u
+LEFT JOIN "permissions" p ON p.id = u.id
+WHERE u.id = @id
+LIMIT 1;
+
 -- name: UpdateUser :one
 UPDATE "users"
 SET

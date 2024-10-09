@@ -87,6 +87,90 @@ func (q *Queries) GetUserById(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
+const getUserWithPermissions = `-- name: GetUserWithPermissions :one
+SELECT u.id, u.full_name, u.email, u.is_verified, p.id, p.family_id, p.can_read, p.can_edit, p.can_create, p.can_modify FROM "users" u
+LEFT JOIN "permissions" p ON p.id = u.id
+WHERE u.id = $1
+LIMIT 1
+`
+
+type GetUserWithPermissionsRow struct {
+	ID         uuid.UUID     `json:"id"`
+	FullName   string        `json:"full_name"`
+	Email      string        `json:"email"`
+	IsVerified bool          `json:"is_verified"`
+	ID_2       uuid.NullUUID `json:"id_2"`
+	FamilyID   uuid.NullUUID `json:"family_id"`
+	CanRead    sql.NullBool  `json:"can_read"`
+	CanEdit    sql.NullBool  `json:"can_edit"`
+	CanCreate  sql.NullBool  `json:"can_create"`
+	CanModify  sql.NullBool  `json:"can_modify"`
+}
+
+func (q *Queries) GetUserWithPermissions(ctx context.Context, id uuid.UUID) (GetUserWithPermissionsRow, error) {
+	row := q.db.QueryRowContext(ctx, getUserWithPermissions, id)
+	var i GetUserWithPermissionsRow
+	err := row.Scan(
+		&i.ID,
+		&i.FullName,
+		&i.Email,
+		&i.IsVerified,
+		&i.ID_2,
+		&i.FamilyID,
+		&i.CanRead,
+		&i.CanEdit,
+		&i.CanCreate,
+		&i.CanModify,
+	)
+	return i, err
+}
+
+const getUsersByEmail = `-- name: GetUsersByEmail :many
+SELECT u.id, u.full_name, u.email, u.hashed_password, u.is_verified, u.password_changed_at, u.created_at FROM "users" u
+LEFT JOIN permissions p ON p.id = u.id
+WHERE
+    u.is_verified = TRUE
+    AND u.email LIKE '%' || $1 || '%'
+    AND ($2 IS FALSE OR p.family_id IS NULL)
+LIMIT 8
+`
+
+type GetUsersByEmailParams struct {
+	Email    sql.NullString `json:"email"`
+	NoFamily interface{}    `json:"no_family"`
+}
+
+func (q *Queries) GetUsersByEmail(ctx context.Context, arg GetUsersByEmailParams) ([]User, error) {
+	rows, err := q.db.QueryContext(ctx, getUsersByEmail, arg.Email, arg.NoFamily)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []User{}
+	for rows.Next() {
+		var i User
+		if err := rows.Scan(
+			&i.ID,
+			&i.FullName,
+			&i.Email,
+			&i.HashedPassword,
+			&i.IsVerified,
+			&i.PasswordChangedAt,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const updateUser = `-- name: UpdateUser :one
 UPDATE "users"
 SET

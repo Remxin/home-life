@@ -6,8 +6,6 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-// import
-
 func convertUser(user db.User) *pb.User {
 	userProto := &pb.User{
 		Id:                user.ID.String(),
