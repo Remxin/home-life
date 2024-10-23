@@ -91,4 +91,5 @@ make sqlc
 ```
 
 ## 🖼️ Images
-![login screen]("https://github.com/Remxin/home-life/blob/master/readme-images/login.png?raw=true")
+![login screen](https://github.com/Remxin/home-life/blob/master/readme-images/login.png?raw=true)
+
