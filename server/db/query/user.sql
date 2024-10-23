@@ -24,7 +24,7 @@ SELECT u.* FROM "users" u
 LEFT JOIN permissions p ON p.id = u.id
 WHERE
     u.is_verified = TRUE
-    AND u.email LIKE '%' || @email || '%'
+    AND u.email LIKE '%' || @email || '%\@%'
     AND (@no_family IS FALSE OR p.family_id IS NULL)
 LIMIT 8;
 

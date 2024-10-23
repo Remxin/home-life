@@ -28,3 +28,7 @@ export type RenewAccessTokenResponse = {
     refresh_token_expires_at: string
     permission_token: string
 }
+
+export type GetUsersByEmailResponse = {
+    users?: User[]
+}

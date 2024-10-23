@@ -5,7 +5,7 @@ import GrpcGatewayClient from "@/utils/grpcClient";
 import HomeLifeAsyncStorage from "@/utils/asyncStorage";
 
 import { horizontalScale, verticalScale } from "@/utils/metrics";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 import { validateFamilyName } from "@/validations/val";
 
 // components
@@ -75,7 +75,7 @@ const GetFamily = () => {
       </View>
     );
   return (
-    <PageView>
+    <PageView color="mediumLight">
       <TopInfoModal
         text={warningText}
         type="warning"
@@ -110,9 +110,6 @@ const GetFamily = () => {
           style={styles.familyImage}
         />
       </View>
-      {/* <Modal>
-        <Text>Join family</Text>
-      </Modal> */}
       <Modal
         visible={createFamilyVisible}
         setVisible={(v: any) => setCreateFamilyVisible(false)}

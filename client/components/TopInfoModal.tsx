@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Animated } from "react-native";
 import { Dispatch, useEffect } from "react";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 
 import { verticalScale } from "@/utils/metrics";
 import { useMovementAnimation } from "@/hooks/animate";
@@ -38,7 +38,7 @@ const TopInfoModal = ({ visible, setVisible, text, type }: TopInfoModalT) => {
 
 
 
-  if (!visible) return <></>;
+  if (!visible) return null;
   return (
     <Animated.View
       style={[styles.container, { backgroundColor: getColor(type), transform: [{ translateY: movementAnim }] }]}

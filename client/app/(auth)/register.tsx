@@ -4,7 +4,7 @@ import { moderateScale, horizontalScale, verticalScale } from "@/utils/metrics";
 
 import PageView from "@/components/PageView";
 import Svg, { Path } from "react-native-svg";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 
 // forms
 import { Form } from "@/components/forms/Form";
@@ -21,9 +21,11 @@ import {
 import { Link } from "expo-router";
 
 const AuthScreen = () => {
-  function onSubmit() {}
+  async function onSubmit() {
+    return []
+  }
   return (
-    <PageView>
+    <PageView color="mediumLight">
       <View style={styles.topSpace}>
         <Text style={styles.topText}>Welcome to</Text>
         <Text style={styles.appTitle}>Home Life</Text>
