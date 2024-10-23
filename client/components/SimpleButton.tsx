@@ -2,7 +2,7 @@ import { Text, TouchableOpacity, StyleSheet, TextStyle } from "react-native";
 import React from "react";
 
 // constants
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 
 type ComponentT = {
   text: string;

@@ -10,7 +10,7 @@ import {
 import React, { useMemo, useState } from "react";
 import { useForm } from "@/components/forms/Form";
 
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 import { horizontalScale } from "@/utils/metrics";
 
 type ComponentT = {

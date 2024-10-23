@@ -1,6 +1,6 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import { Colors, ColorsT } from '@/constants/Colors'
+import { Colors, ColorsT } from '@/constants/colors'
 
 type PageViewProps = {
     children: JSX.Element | JSX.Element[]

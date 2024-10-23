@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TextStyle } from 'react-native'
 import React from 'react'
-import { Colors, ColorsT } from '@/constants/Colors'
+import { Colors, ColorsT } from '@/constants/colors'
 
 type CircleT = {
     children?: React.ReactNode | React.ReactNode[]

@@ -9,6 +9,7 @@ import {
   GetFamilyResponse,
   CreateFamilyResponse,
   RenewAccessTokenResponse,
+  GetUsersByEmailResponse,
 } from "../types/response.t";
 import HomeLifeAsyncStorage, { AsyncStorageKeys } from "./asyncStorage";
 
@@ -104,6 +105,15 @@ class GrpcGatewayClient {
       "POST",
       {}
     );
+  }
+
+  static async getUsersByEmail(email: string): APIResponse<GetUsersByEmailResponse> {
+    return this.makeRequest<{}, GetUsersByEmailResponse>(
+      `/v1/user?email=${email}`,
+      ["access_token"],
+      "GET",
+      {}
+    )
   }
 }
 

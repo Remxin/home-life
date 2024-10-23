@@ -5,7 +5,7 @@ import React from 'react'
 import { useForm } from './Form'
 
 // constants
-import { Colors } from "@/constants/Colors"
+import { Colors } from "@/constants/colors"
 
 
 type ComponentT = {

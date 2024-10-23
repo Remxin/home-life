@@ -1,16 +1,48 @@
 import { StyleSheet, View, Text, Image, ScrollView } from "react-native";
+import { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 import PageView from "@/components/PageView";
 import SimpleButton from "@/components/SimpleButton";
 import Circle from "@/components/Circle";
+import SearchInput from "@/components/SearchInput";
+import Modal from "@/components/Modal";
+
+import GrpcGatewayClient from "@/utils/grpcClient";
 
 import { useStoreSelector } from "@/redux/store";
 import { horizontalScale } from "@/utils/metrics";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
+import { User } from "@/types/db.t";
+
+function UserComponent({data}: {data: User}) {
+  return (
+    <View key={data.id} style={styles.memberCard}>
+      <Circle
+        size={horizontalScale(35)}
+        color="brightWhite"
+        style={styles.memberCircle}
+      >
+        <Ionicons name="person" size={horizontalScale(20)} />
+      </Circle>
+      <View>
+        <Text style={styles.memberName}>{data.name}</Text>
+        <Text style={styles.memberEmail}>{data.email}</Text>
+      </View>
+    </View>
+  );
+}
 
 export default function TabTwoScreen() {
   const family_details = useStoreSelector((state) => state.family);
+  const [showAddMembersModal, setShowAddMembersModal] = useState(false);
+
+  async function userSearchFunction(text: string) {
+    const [error, response] = await GrpcGatewayClient.getUsersByEmail(text)
+    console.log(error, response)
+    if (error || !response.users) return []
+    return response.users
+  }
 
   return (
     <PageView color="brightWhite">
@@ -29,7 +61,7 @@ export default function TabTwoScreen() {
               style={styles.familyImage}
             />
           </Circle>
-          <View style={styles.infoContainer}>
+          <View key="member count" style={styles.infoContainer}>
             <View style={styles.infoCard}>
               <Circle
                 size={horizontalScale(40)}
@@ -45,7 +77,7 @@ export default function TabTwoScreen() {
                 </Text>
               </View>
             </View>
-            <View style={styles.infoCard}>
+            <View key="owner" style={styles.infoCard}>
               <Circle
                 size={horizontalScale(40)}
                 color="brightWhite"
@@ -75,26 +107,38 @@ export default function TabTwoScreen() {
           style={styles.membersScroll}
         >
           {family_details.members.map((member) => (
-            <View style={styles.memberCard}>
-              <Circle size={horizontalScale(35)} color="brightWhite" style={styles.memberCircle}>
-                <Ionicons name="person" size={horizontalScale(20)}/>
-              </Circle>
-              <View>
-                <Text style={styles.memberName}>{member.name}</Text>
-                <Text style={styles.memberEmail}>{member.email}</Text>
-              </View>
-            </View>
+            <UserComponent data={member}/>
           ))}
         </ScrollView>
-        <View style={styles.actions}> 
-        <SimpleButton
-          text="Add members"
-          onPress={() => null}
-          buttonStyle={styles.addButton}
-          textStyle={styles.addButtonText}
-        />
+        <View style={styles.actions}>
+          <SimpleButton
+            text="Add members"
+            onPress={() => setShowAddMembersModal(true)}
+            buttonStyle={styles.addButton}
+            textStyle={styles.addButtonText}
+          />
         </View>
       </View>
+      <Modal
+        style={{ width: "80%", height: "80%" }}
+        visible={showAddMembersModal}
+        setVisible={setShowAddMembersModal}
+      >
+        <View>
+          <Text>Add members</Text>
+          <Text>type member email to search for a member</Text>
+          <Text>*user must be verified to appear in the search</Text>
+        </View>
+        <View>
+          <SearchInput
+            placeholder="email"
+            minTextLen={3}
+            searchDelay={0.5}
+            searchFunc={userSearchFunction}
+            OutputComponent={UserComponent}
+          />
+        </View>
+      </Modal>
     </PageView>
   );
 }
@@ -185,7 +229,7 @@ const styles = StyleSheet.create({
   },
   manageTitle: {
     color: Colors.mediumDark,
-    fontSize: horizontalScale(30)
+    fontSize: horizontalScale(30),
   },
   membersScroll: {
     flex: 1,
@@ -198,22 +242,22 @@ const styles = StyleSheet.create({
     height: horizontalScale(50),
     gap: horizontalScale(10),
     backgroundColor: Colors.white + "77",
-    padding: horizontalScale(8)
+    padding: horizontalScale(8),
   },
   memberCircle: {
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   memberName: {
-    fontSize: horizontalScale(16)
+    fontSize: horizontalScale(16),
   },
   memberEmail: {
     fontSize: horizontalScale(12),
-    color: Colors.dark
+    color: Colors.dark,
   },
   actions: {
     alignItems: "center",
-    justifyContent: 'center',
+    justifyContent: "center",
   },
   addButton: {
     width: horizontalScale(200),

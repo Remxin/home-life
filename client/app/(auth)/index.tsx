@@ -5,7 +5,7 @@ import { moderateScale, horizontalScale, verticalScale } from "@/utils/metrics";
 import PageView from "@/components/PageView";
 import Svg, { Path } from "react-native-svg";
 import { Link, useRouter } from "expo-router";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 
 // utils
 import HomeLifeAsyncStorage from "@/utils/asyncStorage";
@@ -61,7 +61,7 @@ const AuthScreen = () => {
     return null;
   }
   return (
-    <PageView>
+    <PageView color="mediumLight">
       <TopInfoModal visible={!!errorText} setVisible={(v: boolean) => setErrorText("")} text={errorText} type="error"/>
       <View style={styles.topSpace}>
         <Text style={styles.topText}>Welcome to</Text>

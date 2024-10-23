@@ -130,7 +130,7 @@ SELECT u.id, u.full_name, u.email, u.hashed_password, u.is_verified, u.password_
 LEFT JOIN permissions p ON p.id = u.id
 WHERE
     u.is_verified = TRUE
-    AND u.email LIKE '%' || $1 || '%'
+    AND u.email LIKE '%' || $1 || '%\@%'
     AND ($2 IS FALSE OR p.family_id IS NULL)
 LIMIT 8
 `

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, DimensionValue, GestureResponderEvent, TextStyle } from "react-native";
 import React from "react";
-import { Colors } from "@/constants/Colors";
+import { Colors } from "@/constants/colors";
 
 type ModalT = {
   visible: boolean;
